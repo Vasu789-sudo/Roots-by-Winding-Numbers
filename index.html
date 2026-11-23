@@ -1,0 +1,1668 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Roots by Winding Numbers</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap">
+<style>
+/* Layout concept: one long reading column of frosted cards over a drifting pastel field; every proof part pairs numbered steps with a live two-plane diagram (z-plane left, p(z)-plane right). */
+:root{
+  --font-h:'Fraunces',Georgia,'Times New Roman',serif;
+  --font-b:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-m:'STIX Two Text','Times New Roman',Georgia,serif;
+  --bg:#f5efe9; --fg:#1b2633; --mut:#556274;
+  --card:rgba(255,255,255,.60); --card2:rgba(255,255,255,.86); --line:rgba(27,38,51,.14);
+  --nav:rgba(255,252,248,.72); --panel:rgba(255,255,255,.72); --grid:rgba(27,38,51,.09);
+  --c1:#dc4f3a; --c2:#0b8f84; --c3:#a8680f; --c4:#2760cf;
+  --g1:#ffd8cc; --g2:#d2f1e6; --g3:#d6e5ff; --g4:#ffeec4;
+  --glow:rgba(11,143,132,.34); --chip:rgba(11,143,132,.10); --sym:rgba(27,38,51,.10);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#06161b; --fg:#e4f0ec; --mut:#9ab3b1;
+    --card:rgba(9,36,44,.58); --card2:rgba(8,32,40,.84); --line:rgba(150,210,198,.17);
+    --nav:rgba(6,22,28,.72); --panel:rgba(3,18,24,.66); --grid:rgba(150,210,198,.10);
+    --c1:#ff8d75; --c2:#45d9c8; --c3:#e7aa5c; --c4:#76b5ff;
+    --g1:#0a2f38; --g2:#0b2042; --g3:#0c3427; --g4:#3b2a13;
+    --glow:rgba(69,217,200,.30); --chip:rgba(69,217,200,.12); --sym:rgba(180,230,215,.11);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#06161b; --fg:#e4f0ec; --mut:#9ab3b1;
+  --card:rgba(9,36,44,.58); --card2:rgba(8,32,40,.84); --line:rgba(150,210,198,.17);
+  --nav:rgba(6,22,28,.72); --panel:rgba(3,18,24,.66); --grid:rgba(150,210,198,.10);
+  --c1:#ff8d75; --c2:#45d9c8; --c3:#e7aa5c; --c4:#76b5ff;
+  --g1:#0a2f38; --g2:#0b2042; --g3:#0c3427; --g4:#3b2a13;
+  --glow:rgba(69,217,200,.30); --chip:rgba(69,217,200,.12); --sym:rgba(180,230,215,.11);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--fg);font:400 1rem/1.72 var(--font-b);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0;overflow-x:hidden;position:relative;
+  --gl:max(16px,env(safe-area-inset-left,0px));--gr:max(16px,env(safe-area-inset-right,0px));
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:70;background:var(--bg)}
+#bgfx{position:fixed;inset:0;z-index:-2;background:linear-gradient(115deg,var(--g1),var(--g2),var(--g3),var(--g4),var(--g1));background-size:320% 320%;animation:drift 56s ease-in-out infinite}
+#bgc{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+@keyframes drift{0%{background-position:0% 40%}50%{background-position:100% 60%}100%{background-position:0% 40%}}
+main{max-width:1060px;margin:0 auto}
+a{color:var(--c2)}
+h1,h2,h3,h4{font-family:var(--font-h);font-weight:600;line-height:1.15;letter-spacing:-.01em;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.8rem,5vw,2.7rem);margin-bottom:.8rem}
+h3{font-size:clamp(1.3rem,3.2vw,1.7rem);margin-bottom:.6rem}
+h4{font-size:1.08rem;margin:1.1rem 0 .3rem}
+p{margin:.7rem 0;max-width:68ch}
+.eyebrow{font:600 .74rem/1 var(--font-b);letter-spacing:.15em;text-transform:uppercase;color:var(--c2);margin-bottom:.6rem;display:block}
+.lede{font-size:1.1rem;color:var(--fg);max-width:64ch}
+.mut{color:var(--mut)}
+section{padding:4.2rem 0 .6rem;scroll-margin-top:8rem}
+code{font-family:var(--font-m);font-size:1.02em}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;margin-left:calc(-1*var(--gl));margin-right:calc(-1*var(--gr));padding:.45rem var(--gr) .45rem var(--gl);background:var(--nav);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;gap:.8rem;max-width:1060px;margin:0 auto}
+.brand{font:600 1rem var(--font-h);color:var(--fg);text-decoration:none;white-space:nowrap}
+#links{display:flex;gap:.2rem;overflow-x:auto;white-space:nowrap;flex:1;min-width:0;scrollbar-width:none}
+#links::-webkit-scrollbar,#pills::-webkit-scrollbar{display:none}
+#links a,#pills a{font:500 .8rem var(--font-b);color:var(--mut);text-decoration:none;padding:.3rem .65rem;border-radius:999px;transition:background .25s,color .25s}
+#links a:hover,#pills a:hover{color:var(--fg)}
+#links a.on{background:var(--chip);color:var(--c2);font-weight:700}
+#pills{display:none;gap:.3rem;overflow-x:auto;max-width:1060px;margin:.3rem auto 0;scrollbar-width:none}
+.nav.showp #pills{display:flex}
+#pills a{border:1px solid var(--line);white-space:nowrap}
+#pills a.on{background:var(--c2);color:var(--bg);border-color:transparent}
+.prog{position:absolute;left:0;bottom:-1px;height:3px;width:0;background:linear-gradient(90deg,var(--c1),var(--c3),var(--c2),var(--c4))}
+.tbtn{border:1px solid var(--line);background:var(--card2);color:var(--fg);width:2.2rem;height:2.2rem;border-radius:50%;cursor:pointer;font-size:1rem;flex:none}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--c4);outline-offset:2px}
+
+/* cards, buttons */
+.card{background:var(--card);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:20px;padding:clamp(1rem,3vw,1.7rem);margin:1.3rem 0;box-shadow:0 14px 40px -22px rgba(0,0,0,.35)}
+.btn{font:600 .92rem var(--font-b);border-radius:999px;border:1px solid var(--line);background:var(--card2);color:var(--fg);padding:.7rem 1.3rem;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.pri{background:var(--c2);color:#fff;border-color:transparent}
+:root[data-theme="dark"] .btn.pri{color:#04201c}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.pri{color:#04201c}}
+.btn:hover{transform:translateY(-1px)}
+.chip{display:inline-block;font:600 .72rem var(--font-b);padding:.14rem .6rem;border-radius:999px;background:var(--chip);color:var(--c2);border:1px solid var(--line);text-decoration:none;margin-left:.3rem;vertical-align:middle}
+
+/* hero */
+.hero{padding-top:2.4rem;display:grid;grid-template-columns:1.05fr 1fr;gap:1.6rem;align-items:center;min-height:0}
+.hero h1{font-size:clamp(2.3rem,7vw,4.2rem);margin:.5rem 0 .8rem}
+.hello{font:600 1.05rem var(--font-h);font-style:italic;color:var(--c1)}
+.hero .btns{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.2rem}
+.hero .viz{margin:0}
+.hero .card{margin:0}
+
+/* equations */
+.eq{margin:1.1rem auto;padding:1.05rem 1.1rem .8rem;border-radius:18px;background:var(--card2);border:1px solid var(--line);box-shadow:0 0 34px -8px var(--glow),inset 0 0 0 1px rgba(255,255,255,.04);font-family:var(--font-m);font-size:clamp(1.18rem,3.6vw,1.85rem);line-height:1.5;text-align:center;overflow-x:auto;max-width:100%;color:var(--fg)}
+.eq.sm{font-size:clamp(1.05rem,3vw,1.4rem);padding:.7rem .9rem .55rem;margin:.7rem auto;box-shadow:0 0 22px -8px var(--glow)}
+.eq .cap{display:block;font:400 .78rem/1.4 var(--font-b);color:var(--mut);margin-top:.35rem}
+.eq .row{white-space:nowrap;display:inline-block;min-width:0}
+i{font-style:italic}
+i.z{color:var(--c1)}i.p{color:var(--c2)}i.r{color:var(--c3)}i.w{color:var(--c4)}
+i.u{font-style:normal}
+sup,sub{font-size:.62em;line-height:0}
+.frac{display:inline-block;vertical-align:middle;text-align:center;margin:0 .15em}
+.frac .n{display:block;border-bottom:1.5px solid currentColor;padding:0 .3em .05em}
+.frac .d{display:block;padding:.05em .3em 0}
+.intg{display:inline-flex;align-items:center;vertical-align:middle;gap:.04em;margin:0 .12em}
+.intg .sym{font-size:2.3em;line-height:1;font-weight:400;transform:scaleY(1.08)}
+.intg .lims{display:inline-flex;flex-direction:column;justify-content:space-between;font-size:.56em;height:2.5em;text-align:left;margin-left:-.35em}
+.dim{opacity:.55}
+
+/* theorem / lemma / steps */
+.thm{border:1px solid var(--line);border-radius:18px;padding:1.1rem 1.3rem;background:var(--card2);margin:1.2rem 0}
+.thm .tag{display:inline-block;font:700 .72rem var(--font-b);letter-spacing:.12em;text-transform:uppercase;padding:.2rem .7rem;border-radius:999px;background:var(--c2);color:#fff;margin-bottom:.6rem}
+:root[data-theme="dark"] .thm .tag{color:#04201c}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .thm .tag{color:#04201c}}
+.thm.lem .tag{background:var(--c3)}
+.thm.warn .tag{background:var(--c1)}
+.tparts{list-style:none;padding:0;margin:.4rem 0;display:grid;gap:.7rem}
+.tparts li{padding-left:2.2rem;position:relative}
+.tparts li b.k{position:absolute;left:0;top:0;font:700 .9rem var(--font-m);color:var(--c4);width:1.8rem}
+ol.steps{list-style:none;counter-reset:s;padding:0;margin:.8rem 0}
+ol.steps>li{counter-increment:s;position:relative;padding:.1rem 0 .1rem 2.5rem;margin:.9rem 0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:.15rem;width:1.7rem;height:1.7rem;border-radius:50%;display:grid;place-items:center;font:700 .8rem var(--font-b);background:var(--chip);color:var(--c2);border:1px solid var(--line)}
+.part{position:relative}
+.part .pn{position:absolute;right:1rem;top:.4rem;font:600 clamp(3rem,9vw,5.5rem)/1 var(--font-h);color:var(--fg);opacity:.06;pointer-events:none}
+details{border:1px solid var(--line);border-radius:12px;padding:.5rem .9rem;margin:.6rem 0;background:var(--card2)}
+summary{cursor:pointer;font-weight:600;font-size:.92rem}
+.tbl{overflow-x:auto;margin:1rem 0;max-width:100%}
+table.data{border-collapse:collapse;width:100%;font-size:.92rem;font-variant-numeric:tabular-nums}
+table.data th,table.data td{padding:.45rem .7rem;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+table.data th{font-weight:700;color:var(--mut);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+ul.tight{margin:.5rem 0;padding-left:1.2rem}
+ul.tight li{margin:.3rem 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1rem}
+.mini{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:1rem 1.1rem;min-width:0}
+.mini h4{margin-top:0}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1rem;font-size:.82rem;color:var(--mut);margin:.6rem 0}
+.legend span::before{content:"";display:inline-block;width:.7rem;height:.7rem;border-radius:50%;margin-right:.35rem;vertical-align:-.05rem;background:currentColor}
+.legend .l1{color:var(--c1)}.legend .l2{color:var(--c2)}.legend .l3{color:var(--c3)}.legend .l4{color:var(--c4)}
+.legend span{color:var(--mut)}
+.legend .l1::before{background:var(--c1)}.legend .l2::before{background:var(--c2)}.legend .l3::before{background:var(--c3)}.legend .l4::before{background:var(--c4)}
+
+/* viz */
+.viz{margin:1.2rem 0;border-radius:16px;overflow:hidden;background:var(--card);border:1px solid var(--line);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.viz canvas{display:block;width:100%}
+.ctl{display:flex;flex-wrap:wrap;gap:.5rem 1.1rem;padding:.6rem .85rem;border-top:1px solid var(--line);align-items:center;font-size:.82rem}
+.ctl label{display:flex;align-items:center;gap:.45rem;min-width:0}
+.ctl .grow{flex:1 1 220px}
+.ctl input[type=range]{accent-color:var(--c2);flex:1;min-width:110px}
+.ctl select,.ctl input[type=text],.ctl input[type=number]{font:500 .85rem var(--font-b);background:var(--card2);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:.3rem .5rem;max-width:100%}
+.ctl input[type=text]{min-width:11rem}
+.ctl button{font:600 .8rem var(--font-b);border:1px solid var(--line);background:var(--card2);color:var(--fg);border-radius:999px;padding:.3rem .8rem;cursor:pointer}
+.ro{font:600 .95rem var(--font-m);font-variant-numeric:tabular-nums;min-width:3.4ch;color:var(--c4)}
+.viz figcaption{padding:.5rem .9rem .8rem;font-size:.84rem;color:var(--mut);line-height:1.55}
+.vtxt{padding:.6rem .9rem;font-size:.9rem;border-top:1px solid var(--line);min-height:3.4rem}
+.vtxt b{color:var(--c3)}
+.out{padding:.6rem .9rem;border-top:1px solid var(--line);font:400 .95rem/1.6 var(--font-m);font-variant-numeric:tabular-nums}
+.out b{color:var(--c4)}
+.err{color:var(--c1)}
+
+/* floating controls */
+.fabs{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:.5rem;z-index:65}
+.fab{width:2.9rem;height:2.9rem;border-radius:50%;border:1px solid var(--line);background:var(--card2);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:var(--fg);font:700 .8rem var(--font-b);cursor:pointer;box-shadow:0 8px 24px -10px rgba(0,0,0,.5)}
+.fab.act{background:var(--c2);color:#fff}
+:root[data-theme="dark"] .fab.act{color:#04201c}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .fab.act{color:#04201c}}
+
+/* pop-out */
+.pre{opacity:0;transform:translateY(28px) scale(.965)}
+.pre.in{opacity:1;transform:none;transition:opacity .75s cubic-bezier(.2,.7,.2,1) var(--d,0s),transform .75s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+footer{padding:3rem 0 6rem;color:var(--mut);font-size:.85rem}
+
+@media (max-width:820px){.hero{grid-template-columns:1fr}.brand{display:none}section{padding-top:3.4rem}}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+  .pre{opacity:1;transform:none}
+}
+</style>
+
+<div id="bgfx" aria-hidden="true"></div>
+<canvas id="bgc" aria-hidden="true"></canvas>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top">Roots by Winding Numbers</a>
+    <nav id="links" aria-label="Sections"></nav>
+    <button class="tbtn" id="theme" type="button" aria-label="Toggle light and dark theme">◐</button>
+  </div>
+  <div id="pills" aria-label="Proof parts"></div>
+  <div class="prog" id="prog"></div>
+</header>
+
+<main id="top">
+
+<section class="hero" id="hero" style="padding-bottom:1.5rem">
+  <div class="pop">
+    <span class="hello">Hello, Reader.</span>
+    <h1>Every polynomial has a root.</h1>
+    <p class="lede">This page proves it by counting how many times a loop winds around zero. Watch the curve: its winding number can only change when it sweeps across the origin, and that sweep is a root.</p>
+    <div class="eq sm" style="text-align:center"><span class="row"><i class="w">W</i>( <i class="p">p</i>(<i class="r u">R</i>e<sup><i class="z u">i</i><i class="z">t</i></sup>) ) = <i class="w">n</i>, &nbsp; <i class="w">W</i>( <i class="p">p</i>(<i class="r u">0</i>·e<sup><i class="z u">i</i><i class="z">t</i></sup>) ) = 0</span><span class="cap">Winding number at a large radius versus a point. The two cannot both hold for a polynomial without roots.</span></div>
+    <div class="btns">
+      <a class="btn pri" href="#abstract" id="begin">Begin</a>
+      <button class="btn" id="heroauto" type="button">Auto-scroll</button>
+    </div>
+  </div>
+  <div class="pop">
+    <figure class="viz" data-viz="hero" style="margin:0"><figcaption>The curve p(re<sup>it</sup>) for p(z) = z⁴ + z + 1 as r grows. It passes through 0 at r ≈ 0.845 and r ≈ 1.184, and the winding number jumps by 2 each time.</figcaption></figure>
+  </div>
+</section>
+
+<section id="abstract" data-nav data-title="Abstract">
+  <span class="eyebrow pop">Abstract</span>
+  <h2 class="pop">One integer, two radii, one contradiction</h2>
+  <p class="lede pop">Let <i class="p">p</i> be a polynomial of degree <i class="w">n</i> ≥ 1 with complex coefficients. For every radius <i class="r">r</i> ≥ 0 the map <i class="z">t</i> ↦ <i class="p">p</i>(<i class="r">r</i>e<sup><i class="z u">i</i><i class="z">t</i></sup>) traces a closed loop in the plane. If <i class="p">p</i> had no zero, none of these loops would touch 0, and each would have a well defined integer winding number around 0.</p>
+  <div class="eq pop"><span class="row"><i class="w">W</i><sub><i class="r">r</i></sub> := <i class="w">W</i>( <i class="z">t</i> ↦ <i class="p">p</i>(<i class="r">r</i>e<sup><i class="z u">i</i><i class="z">t</i></sup>) ) &nbsp;∈&nbsp; ℤ</span><span class="cap">The integer attached to the loop of radius r. It is the number of times the loop goes counterclockwise around the origin.</span></div>
+  <p class="pop">The proof needs three facts. First, the winding number does not change under a perturbation smaller than the distance to the origin, so <i class="r">r</i> ↦ <i class="w">W</i><sub><i class="r">r</i></sub> is a continuous integer valued function on an interval, hence constant. Second, at <i class="r">r</i> = 0 the loop is the single point <i class="p">p</i>(0), so <i class="w">W</i><sub>0</sub> = 0. Third, for <i class="r">r</i> large, <i class="p">p</i>(<i class="z">z</i>) is so close to <i class="z">z</i><sup><i class="w">n</i></sup> that <i class="w">W</i><sub><i class="r">r</i></sub> = <i class="w">n</i>. Then 0 = <i class="w">n</i> ≥ 1, which is absurd.</p>
+  <div class="legend pop"><span class="l1">z, circles and paths in the z-plane</span><span class="l2">p(z), image curves and loops</span><span class="l3">radii, bounds, constants</span><span class="l4">winding numbers and integers</span></div>
+  <p class="pop mut">The four colours above keep the same meaning on every equation and diagram of the page. The diagram below is the logical map of the proof. Tap a node to jump to that part.</p>
+  <figure class="viz pop" data-viz="map"><figcaption>Dependency map of the eight proof parts. Each arrow means the next part uses the earlier one. Parts 6 and 7 are the two radii, and part 8 puts them together.</figcaption></figure>
+</section>
+
+<section id="history" data-nav data-title="History">
+  <span class="eyebrow pop">History</span>
+  <h2 class="pop">Four centuries of attempts</h2>
+  <p class="pop">The statement was believed long before it was proved. The dates and credits below are the ones commonly given in the history of mathematics; where sources disagree about a date or an attribution, treat the entry as approximate.</p>
+  <figure class="viz pop" data-viz="hist"><figcaption>Tap a dot or move the slider. The highlight tours the timeline on its own and pauses when you touch it.</figcaption></figure>
+  <p class="pop">The winding number argument used on this page is a modern, algebraic-topology style rendering of the geometric idea behind several of the early proofs. Versions of it appear in many textbooks, and pinning down who wrote it first is difficult, so no single credit is claimed here.</p>
+</section>
+
+<section id="prelim" data-nav data-title="Preliminaries">
+  <span class="eyebrow pop">Preliminaries</span>
+  <h2 class="pop">Five tools, nothing more</h2>
+  <p class="pop">The proof uses only the following standard facts. Each is proved in a first course on analysis or complex numbers, and none depends on the theorem being proved.</p>
+  <div class="grid2">
+    <div class="mini pop"><h4>1. The exponential</h4><p>For <i class="z">w</i> = <i class="z">x</i> + <i class="z u">i</i><i class="z">y</i>, e<sup><i class="z">w</i></sup> = e<sup><i class="z">x</i></sup>(cos <i class="z">y</i> + <i class="z u">i</i> sin <i class="z">y</i>). It is continuous, e<sup><i class="z">a</i>+<i class="z">b</i></sup> = e<sup><i class="z">a</i></sup>e<sup><i class="z">b</i></sup>, and e<sup><i class="z">w</i></sup> = 1 exactly when <i class="z">w</i> ∈ 2π<i class="z u">i</i>ℤ.</p></div>
+    <div class="mini pop"><h4>2. A logarithm on the right half-plane</h4><p>On <i class="p">H</i> = {Re <i class="z">u</i> &gt; 0} define Log <i class="z">u</i> = ln|<i class="z">u</i>| + <i class="z u">i</i> arctan(Im <i class="z">u</i> / Re <i class="z">u</i>). It is continuous, e<sup>Log <i class="z">u</i></sup> = <i class="z">u</i>, and Log 1 = 0. The disc |<i class="z">u</i> − 1| &lt; 1 lies inside <i class="p">H</i> because Re <i class="z">u</i> ≥ 1 − |<i class="z">u</i> − 1| &gt; 0.</p></div>
+    <div class="mini pop"><h4>3. Compactness</h4><p>A continuous real function on a closed bounded set such as [0, 1] × [0, 2π] is bounded, attains its minimum, and is uniformly continuous. Polynomials are continuous.</p></div>
+    <div class="mini pop"><h4>4. Integer valued functions</h4><p>A continuous function from an interval to ℤ is constant. This is the intermediate value theorem: a continuous function that takes two integer values would take every value between them.</p></div>
+    <div class="mini pop"><h4>5. Triangle inequalities</h4><p>|<i class="z">a</i> + <i class="z">b</i>| ≤ |<i class="z">a</i>| + |<i class="z">b</i>| and |<i class="z">a</i> + <i class="z">b</i>| ≥ |<i class="z">a</i>| − |<i class="z">b</i>|. They control how far a polynomial strays from its leading term.</p></div>
+    <div class="mini pop"><h4>What the exponential does</h4><p>The picture below is the reason a loop in ℂ∖{0} has a well defined number of turns: e<sup>φ</sup> wraps the φ-plane around the origin infinitely often, and a continuous choice of φ keeps count.</p></div>
+  </div>
+  <figure class="viz pop" data-viz="prelim"><figcaption>Left: a point w = ρ(θ)e<sup>iθ</sup> circles the origin twice. Right: its continuous logarithm φ climbs without jumping (teal). Its copies shifted by 2πik (dashed) are also logarithms. The principal argument (grey dashed) jumps by 2π and is not continuous.</figcaption></figure>
+</section>
+
+<section id="theorem" data-nav data-title="Theorem">
+  <span class="eyebrow pop">The statement</span>
+  <h2 class="pop">The Fundamental Theorem of Algebra</h2>
+  <div class="thm pop">
+    <span class="tag">Theorem</span>
+    <p style="margin-top:0">Let <i class="w">n</i> ≥ 1 and let <i class="p">p</i>(<i class="z">z</i>) = <i class="r">a</i><sub><i class="w">n</i></sub><i class="z">z</i><sup><i class="w">n</i></sup> + … + <i class="r">a</i><sub>1</sub><i class="z">z</i> + <i class="r">a</i><sub>0</sub> with every <i class="r">a</i><sub><i class="w">k</i></sub> ∈ ℂ and <i class="r">a</i><sub><i class="w">n</i></sub> ≠ 0. Then:</p>
+    <ol class="tparts" style="counter-reset:t">
+      <li><b class="k">(1)</b><b>Existence.</b> There is <i class="z">z</i><sub>0</sub> ∈ ℂ with <i class="p">p</i>(<i class="z">z</i><sub>0</sub>) = 0. <a class="chip" href="#p1">proved in Parts 1 to 8</a></li>
+      <li><b class="k">(2)</b><b>Factorisation.</b> There are <i class="z">z</i><sub>1</sub>, …, <i class="z">z</i><sub><i class="w">n</i></sub> ∈ ℂ, not necessarily distinct, with <i class="p">p</i>(<i class="z">z</i>) = <i class="r">a</i><sub><i class="w">n</i></sub>(<i class="z">z</i> − <i class="z">z</i><sub>1</sub>)⋯(<i class="z">z</i> − <i class="z">z</i><sub><i class="w">n</i></sub>). <a class="chip" href="#cor">Corollary 1</a></li>
+      <li><b class="k">(3)</b><b>Uniqueness and count.</b> The list <i class="z">z</i><sub>1</sub>, …, <i class="z">z</i><sub><i class="w">n</i></sub> is unique up to order, so <i class="p">p</i> has exactly <i class="w">n</i> roots counted with multiplicity. <a class="chip" href="#cor">Corollary 2</a></li>
+      <li><b class="k">(4)</b><b>Real coefficients.</b> If all <i class="r">a</i><sub><i class="w">k</i></sub> are real, then <i class="p">p</i> is a product of real linear factors and real quadratic factors with negative discriminant, and non-real roots come in conjugate pairs of equal multiplicity. <a class="chip" href="#cor">Corollary 4</a></li>
+      <li><b class="k">(5)</b><b>Counting form.</b> If <i class="r">R</i> &gt; 0 and <i class="p">p</i> has no zero on |<i class="z">z</i>| = <i class="r">R</i>, then <i class="w">W</i>( <i class="z">t</i> ↦ <i class="p">p</i>(<i class="r">R</i>e<sup><i class="z u">i</i><i class="z">t</i></sup>) ) equals the number of zeros of <i class="p">p</i> in |<i class="z">z</i>| &lt; <i class="r">R</i>, with multiplicity. In particular every zero satisfies |<i class="z">z</i>| &lt; 1 + Σ<sub><i class="w">k</i>&lt;<i class="w">n</i></sub> |<i class="r">a</i><sub><i class="w">k</i></sub>/<i class="r">a</i><sub><i class="w">n</i></sub>|. <a class="chip" href="#cor">Corollaries 7 and 8</a></li>
+    </ol>
+  </div>
+  <div class="eq pop"><span class="row">∀ <i class="p">p</i> ∈ ℂ[<i class="z">z</i>], deg <i class="p">p</i> = <i class="w">n</i> ≥ 1 &nbsp;⟹&nbsp; ∃ <i class="z">z</i><sub>0</sub> ∈ ℂ : <i class="p">p</i>(<i class="z">z</i><sub>0</sub>) = 0</span><span class="cap">The core statement, part (1). Everything else on this page follows from it together with the winding number tools.</span></div>
+  <h4 class="pop">Hypotheses, and why each one is there</h4>
+  <ul class="tight pop">
+    <li><b>Degree at least 1.</b> A nonzero constant such as 5 has no root.</li>
+    <li><b>Coefficients in ℂ.</b> Over ℝ the statement fails: <i class="z">x</i><sup>2</sup> + 1 has no real root. Over ℂ the coefficients may be real, rational or genuinely complex.</li>
+    <li><b>Leading coefficient nonzero.</b> This is what makes the degree <i class="w">n</i> and what makes <i class="p">p</i> behave like <i class="z">z</i><sup><i class="w">n</i></sup> far from the origin.</li>
+    <li><b>Multiplicity.</b> The count of exactly <i class="w">n</i> roots is with multiplicity, so (<i class="z">z</i> − 1)<sup>2</sup> has the root 1 counted twice.</li>
+  </ul>
+  <figure class="viz pop" data-viz="thm"><figcaption>A degree n polynomial always has n roots (coral dots). The slider morphs a generic polynomial into (z − 1)<sup>n</sup>, whose n roots collide at 1 and become one root of multiplicity n. The dashed bronze circle passes through the farthest root, and the readout compares its radius with the bound 1 + Σ|a<sub>k</sub>|.</figcaption></figure>
+</section>
+
+<section id="intuition" data-nav data-title="Intuition">
+  <span class="eyebrow pop">Intuition</span>
+  <h2 class="pop">A person, a dog, and a tree</h2>
+  <p class="pop">A person walks once around a tree along a circle. A dog on a leash follows. If the leash is always shorter than the person's distance to the tree, the dog can never reach the tree, so the dog must also go around the tree exactly as many times as the person. This is the whole engine of the proof.</p>
+  <div class="eq pop"><span class="row">| <i class="p">f</i>(<i class="z">t</i>) − <i class="z">g</i>(<i class="z">t</i>) | &lt; | <i class="z">g</i>(<i class="z">t</i>) | for all <i class="z">t</i> &nbsp;⟹&nbsp; <i class="w">W</i>(<i class="p">f</i>) = <i class="w">W</i>(<i class="z">g</i>)</span><span class="cap">Leash length on the left, distance from the person to the tree in the middle. Made precise in Part 4.</span></div>
+  <p class="pop">Now apply it to <i class="p">p</i>. Take the loop of radius <i class="r">r</i> in the <i class="z">z</i>-plane and send it through <i class="p">p</i>. When <i class="r">r</i> is tiny the image is a tiny loop near <i class="p">p</i>(0), which does not surround the origin, so it winds 0 times. When <i class="r">r</i> is huge the image looks like <i class="z">z</i><sup><i class="w">n</i></sup>, so it winds <i class="w">n</i> times. As <i class="r">r</i> grows the image deforms continuously. A loop can only change its winding number by being dragged across the origin, and being dragged across the origin means <i class="p">p</i>(<i class="r">r</i>e<sup><i class="z u">i</i><i class="z">t</i></sup>) = 0 for some <i class="z">t</i>. That is a root.</p>
+  <figure class="viz pop" data-viz="sweep-main"><figcaption>Left: the circle |z| = r (coral) and the roots of p. Right: its image under p (teal) with the origin marked. Below: the winding number as r grows (blue staircase). The staircase steps up exactly when r equals the modulus of a root and the curve touches 0.</figcaption></figure>
+  <p class="pop">The rest of the page turns this picture into a proof. Parts 2 and 3 say exactly what “number of turns” means, Part 4 is the leash, Part 5 is the continuous deformation, and Parts 6 and 7 compute the two ends.</p>
+</section>
+
+<section id="proof" data-nav data-title="Proof">
+  <span class="eyebrow pop">The proof of part (1)</span>
+  <h2 class="pop">Eight parts, one contradiction</h2>
+  <p class="pop">Every step below is complete. Each part has a diagram you can play with. The diagrams use five sample polynomials, which of course do have roots, so they illustrate the objects of the proof but never the impossible case that the proof assumes away. Use the pills in the top bar to jump between parts.</p>
+
+  <!-- PART 1 -->
+  <article class="card part pop" id="p1" data-pill="1" data-short="Setup">
+    <span class="pn">1</span>
+    <span class="eyebrow">Part 1 of 8</span>
+    <h3>Setup and strategy</h3>
+    <div class="eq"><span class="row"><i class="p">p</i>(<i class="z">z</i>) = <i class="z">z</i><sup><i class="w">n</i></sup> + <i class="r">a</i><sub><i class="w">n</i>−1</sub><i class="z">z</i><sup><i class="w">n</i>−1</sup> + … + <i class="r">a</i><sub>1</sub><i class="z">z</i> + <i class="r">a</i><sub>0</sub>, &nbsp; <i class="w">n</i> ≥ 1</span><span class="cap">The normalised polynomial. Its zero set is the same as that of the original.</span></div>
+    <ol class="steps">
+      <li>Divide the given polynomial by its leading coefficient <i class="r">a</i><sub><i class="w">n</i></sub> ≠ 0. This does not change the zeros, so we may assume <i class="p">p</i> is monic. Put <i class="r">A</i> = |<i class="r">a</i><sub>0</sub>| + |<i class="r">a</i><sub>1</sub>| + … + |<i class="r">a</i><sub><i class="w">n</i>−1</sub>|.</li>
+      <li>For each radius <i class="r">r</i> ≥ 0 define the path
+        <div class="eq sm"><span class="row"><i class="p">γ</i><sub><i class="r">r</i></sub>(<i class="z">t</i>) = <i class="p">p</i>(<i class="r">r</i>e<sup><i class="z u">i</i><i class="z">t</i></sup>), &nbsp; 0 ≤ <i class="z">t</i> ≤ 2π</span><span class="cap">The image under p of the circle of radius r.</span></div>
+        Since <i class="p">p</i> is continuous, the map (<i class="r">r</i>, <i class="z">t</i>) ↦ <i class="p">γ</i><sub><i class="r">r</i></sub>(<i class="z">t</i>) is continuous. Since e<sup>0</sup> = e<sup>2π<i class="z u">i</i></sup>, each path is closed: <i class="p">γ</i><sub><i class="r">r</i></sub>(0) = <i class="p">γ</i><sub><i class="r">r</i></sub>(2π).</li>
+      <li>Suppose, for contradiction, that <i class="p">p</i>(<i class="z">z</i>) ≠ 0 for every <i class="z">z</i> ∈ ℂ. Then <i class="p">γ</i><sub><i class="r">r</i></sub>(<i class="z">t</i>) ≠ 0 for every <i class="r">r</i> and <i class="z">t</i>, so every <i class="p">γ</i><sub><i class="r">r</i></sub> is a closed path in ℂ∖{0}. In particular <i class="r">a</i><sub>0</sub> = <i class="p">p</i>(0) ≠ 0.</li>
+      <li>Plan. Parts 2 and 3 define an integer <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">r</i></sub>) for such paths. Parts 4 and 5 show it cannot depend on <i class="r">r</i>. Part 6 computes it at <i class="r">r</i> = 0, Part 7 computes it at a large radius, and Part 8 observes that the two answers differ.</li>
+    </ol>
+    <figure class="viz" data-viz="p1"><figcaption>The family of loops. Left: concentric circles in the z-plane, from small (bronze) to large (coral). Right: their images γ<sub>r</sub>, with the current radius in bold and a₀ = p(0) marked. For this sample polynomial the curves do touch the origin; for the polynomial the proof imagines, none ever would.</figcaption></figure>
+  </article>
+
+  <!-- PART 2 -->
+  <article class="card part pop" id="p2" data-pill="2" data-short="Lifting">
+    <span class="pn">2</span>
+    <span class="eyebrow">Part 2 of 8</span>
+    <h3>A continuous logarithm along a path</h3>
+    <div class="thm lem"><span class="tag">Lemma 2</span>
+      <p style="margin-top:0">Let <i class="p">f</i> : [<i class="r">a</i>, <i class="r">b</i>] → ℂ∖{0} be continuous and let e<sup><i class="z">w</i><sub>0</sub></sup> = <i class="p">f</i>(<i class="r">a</i>). Then there is exactly one continuous <i class="z">φ</i> : [<i class="r">a</i>, <i class="r">b</i>] → ℂ with <i class="z">φ</i>(<i class="r">a</i>) = <i class="z">w</i><sub>0</sub> and</p>
+      <div class="eq sm"><span class="row">e<sup><i class="z">φ</i>(<i class="z">t</i>)</sup> = <i class="p">f</i>(<i class="z">t</i>) &nbsp; for all <i class="z">t</i> ∈ [<i class="r">a</i>, <i class="r">b</i>]</span><span class="cap"><i>φ</i> is called a lift of <i>f</i> through the exponential.</span></div>
+    </div>
+    <ol class="steps">
+      <li><b>Local logarithm.</b> If |<i class="z">u</i> − 1| &lt; 1 then Re <i class="z">u</i> &gt; 0, so Log <i class="z">u</i> from the preliminaries is defined, continuous, satisfies e<sup>Log <i class="z">u</i></sup> = <i class="z">u</i>, and Log 1 = 0.</li>
+      <li><b>Uniform control.</b> The set <i class="p">f</i>([<i class="r">a</i>, <i class="r">b</i>]) is compact and misses 0, so <i class="r">m</i> := min |<i class="p">f</i>| &gt; 0. By uniform continuity there is <i class="r">δ</i> &gt; 0 such that |<i class="z">s</i> − <i class="z">t</i>| ≤ <i class="r">δ</i> implies |<i class="p">f</i>(<i class="z">s</i>) − <i class="p">f</i>(<i class="z">t</i>)| &lt; <i class="r">m</i>.</li>
+      <li><b>Ratios stay in the disc.</b> For |<i class="z">s</i> − <i class="z">t</i>| ≤ <i class="r">δ</i>,
+        <div class="eq sm"><span class="row">| <span class="frac"><span class="n"><i class="p">f</i>(<i class="z">s</i>)</span><span class="d"><i class="p">f</i>(<i class="z">t</i>)</span></span> − 1 | = <span class="frac"><span class="n">|<i class="p">f</i>(<i class="z">s</i>) − <i class="p">f</i>(<i class="z">t</i>)|</span><span class="d">|<i class="p">f</i>(<i class="z">t</i>)|</span></span> &lt; <span class="frac"><span class="n"><i class="r">m</i></span><span class="d"><i class="r">m</i></span></span> ≤ 1</span><span class="cap">So the ratio <i>f(s)/f(t)</i> lies in the disc around 1 where Log is defined.</span></div></li>
+      <li><b>Build the lift piece by piece.</b> Choose <i class="r">a</i> = <i class="z">t</i><sub>0</sub> &lt; <i class="z">t</i><sub>1</sub> &lt; … &lt; <i class="z">t</i><sub><i class="w">N</i></sub> = <i class="r">b</i> with each gap at most <i class="r">δ</i>. Put <i class="z">φ</i>(<i class="z">t</i><sub>0</sub>) = <i class="z">w</i><sub>0</sub> and, on [<i class="z">t</i><sub><i class="w">j</i></sub>, <i class="z">t</i><sub><i class="w">j</i>+1</sub>],
+        <div class="eq sm"><span class="row"><i class="z">φ</i>(<i class="z">t</i>) = <i class="z">φ</i>(<i class="z">t</i><sub><i class="w">j</i></sub>) + Log <span class="frac"><span class="n"><i class="p">f</i>(<i class="z">t</i>)</span><span class="d"><i class="p">f</i>(<i class="z">t</i><sub><i class="w">j</i></sub>)</span></span></span><span class="cap">Defined successively for j = 0, 1, …, N − 1.</span></div></li>
+      <li><b>It is a continuous lift.</b> If e<sup><i class="z">φ</i>(<i class="z">t</i><sub><i class="w">j</i></sub>)</sup> = <i class="p">f</i>(<i class="z">t</i><sub><i class="w">j</i></sub>) then on the next piece e<sup><i class="z">φ</i>(<i class="z">t</i>)</sup> = <i class="p">f</i>(<i class="z">t</i><sub><i class="w">j</i></sub>) · <i class="p">f</i>(<i class="z">t</i>)/<i class="p">f</i>(<i class="z">t</i><sub><i class="w">j</i></sub>) = <i class="p">f</i>(<i class="z">t</i>), and induction starts from e<sup><i class="z">w</i><sub>0</sub></sup> = <i class="p">f</i>(<i class="r">a</i>). At the break point <i class="z">t</i><sub><i class="w">j</i>+1</sub> the next piece starts at the value the previous piece ends with, because Log 1 = 0 gives <i class="z">φ</i>(<i class="z">t</i><sub><i class="w">j</i>+1</sub>) from either formula. Each piece is continuous, so <i class="z">φ</i> is continuous.</li>
+      <li><b>Uniqueness.</b> If <i class="z">φ</i> and <i class="z">ψ</i> are two continuous lifts with the same starting value, then e<sup><i class="z">φ</i>−<i class="z">ψ</i></sup> = 1, so (<i class="z">φ</i> − <i class="z">ψ</i>)/(2π<i class="z u">i</i>) is a continuous integer valued function that is 0 at <i class="r">a</i>. By tool 4 it is constant, hence 0.</li>
+    </ol>
+    <p class="mut">The same argument shows that two lifts with arbitrary starting values differ by a constant in 2π<i class="z u">i</i>ℤ.</p>
+    <figure class="viz" data-viz="p2"><figcaption>Left: the loop f(t) = p(re<sup>it</sup>) with its current point. Right: the continuous lift, plotted as Im φ(t) (blue), against the principal argument (grey dashed), which jumps. Tick marks show a partition fine enough that each ratio f(t)/f(t<sub>j</sub>) stays within distance 1 of 1.</figcaption></figure>
+  </article>
+
+  <!-- PART 3 -->
+  <article class="card part pop" id="p3" data-pill="3" data-short="Winding number">
+    <span class="pn">3</span>
+    <span class="eyebrow">Part 3 of 8</span>
+    <h3>The winding number</h3>
+    <p>A <b>closed path avoiding 0</b> is a continuous <i class="p">f</i> : [0, 2π] → ℂ∖{0} with <i class="p">f</i>(0) = <i class="p">f</i>(2π).</p>
+    <div class="eq"><span class="row"><i class="w">W</i>(<i class="p">f</i>) = <span class="frac"><span class="n"><i class="z">φ</i>(2π) − <i class="z">φ</i>(0)</span><span class="d">2π<i class="z u">i</i></span></span></span><span class="cap">where <i>φ</i> is any continuous lift of <i>f</i> from Part 2.</span></div>
+    <ol class="steps">
+      <li><b>It is an integer.</b> e<sup><i class="z">φ</i>(2π)</sup> = <i class="p">f</i>(2π) = <i class="p">f</i>(0) = e<sup><i class="z">φ</i>(0)</sup>, so <i class="z">φ</i>(2π) − <i class="z">φ</i>(0) ∈ 2π<i class="z u">i</i>ℤ and <i class="w">W</i>(<i class="p">f</i>) ∈ ℤ.</li>
+      <li><b>It is well defined.</b> Another lift differs from <i class="z">φ</i> by a constant (Part 2, uniqueness), which cancels in the difference.</li>
+      <li><b>Meaning.</b> Im <i class="z">φ</i> is a continuous choice of argument of <i class="p">f</i>, and Re <i class="z">φ</i> = ln|<i class="p">f</i>| returns to its starting value. So 2π<i class="w">W</i>(<i class="p">f</i>) is the total change of the argument: the number of counterclockwise turns around 0.</li>
+      <li><b>Property (W1).</b> For an integer <i class="w">n</i> and a constant <i class="r">c</i> ≠ 0, the path <i class="r">c</i>e<sup><i class="z u">i</i><i class="w">n</i><i class="z">t</i></sup> has the lift ln <i class="r">c</i> + <i class="z u">i</i><i class="w">n</i><i class="z">t</i> (taking a logarithm ln <i class="r">c</i> of <i class="r">c</i>), so <i class="w">W</i> = <i class="w">n</i>.
+        <div class="eq sm"><span class="row"><i class="w">W</i>( <i class="r">c</i> e<sup><i class="z u">i</i><i class="w">n</i><i class="z">t</i></sup> ) = <i class="w">n</i></span></div></li>
+      <li><b>Property (W2).</b> A constant path <i class="r">c</i> ≠ 0 has constant lift, so <i class="w">W</i> = 0.</li>
+      <li><b>Property (W3).</b> If <i class="z">φ</i> lifts <i class="p">f</i> and <i class="z">ψ</i> lifts <i class="p">g</i>, then <i class="z">φ</i> + <i class="z">ψ</i> lifts <i class="p">fg</i>, because e<sup><i class="z">φ</i>+<i class="z">ψ</i></sup> = <i class="p">fg</i>. Hence
+        <div class="eq sm"><span class="row"><i class="w">W</i>(<i class="p">fg</i>) = <i class="w">W</i>(<i class="p">f</i>) + <i class="w">W</i>(<i class="p">g</i>)</span></div></li>
+      <li><b>Property (W4).</b> If <i class="p">f</i> takes values in the disc |<i class="z">u</i> − 1| &lt; 1, then Log ∘ <i class="p">f</i> is a continuous lift. Since <i class="p">f</i>(0) = <i class="p">f</i>(2π), Log <i class="p">f</i>(2π) = Log <i class="p">f</i>(0), so <i class="w">W</i>(<i class="p">f</i>) = 0.</li>
+    </ol>
+    <figure class="viz" data-viz="p3"><figcaption>Pick a loop. The blue marker on the number line is (total change of argument) / 2π so far. It ends on an integer. Tick the box to multiply the loop by e<sup>2it</sup>: the winding number goes up by exactly 2, which is property (W3).</figcaption></figure>
+  </article>
+
+  <!-- PART 4 -->
+  <article class="card part pop" id="p4" data-pill="4" data-short="Leash lemma">
+    <span class="pn">4</span>
+    <span class="eyebrow">Part 4 of 8</span>
+    <h3>The leash lemma</h3>
+    <div class="thm lem"><span class="tag">Lemma 4</span>
+      <p style="margin-top:0">Let <i class="p">f</i>, <i class="z">g</i> : [0, 2π] → ℂ be continuous with <i class="p">f</i>(0) = <i class="p">f</i>(2π) and <i class="z">g</i>(0) = <i class="z">g</i>(2π), and suppose</p>
+      <div class="eq sm"><span class="row">|<i class="p">f</i>(<i class="z">t</i>) − <i class="z">g</i>(<i class="z">t</i>)| &lt; |<i class="z">g</i>(<i class="z">t</i>)| &nbsp; for every <i class="z">t</i> ∈ [0, 2π]</span><span class="cap">The leash is shorter than the distance from the person g(t) to the tree at 0.</span></div>
+      <p style="margin-bottom:0">Then <i class="p">f</i> and <i class="z">g</i> are closed paths avoiding 0 and <i class="w">W</i>(<i class="p">f</i>) = <i class="w">W</i>(<i class="z">g</i>).</p>
+    </div>
+    <ol class="steps">
+      <li><b>Neither path hits 0.</b> The inequality forces |<i class="z">g</i>(<i class="z">t</i>)| &gt; 0. If <i class="p">f</i>(<i class="z">t</i>) = 0 we would get |<i class="z">g</i>(<i class="z">t</i>)| &lt; |<i class="z">g</i>(<i class="z">t</i>)|, which is false. So both are closed paths in ℂ∖{0}.</li>
+      <li><b>Form the ratio.</b> Let <i class="r">h</i>(<i class="z">t</i>) = <i class="p">f</i>(<i class="z">t</i>)/<i class="z">g</i>(<i class="z">t</i>). It is continuous and <i class="r">h</i>(0) = <i class="r">h</i>(2π).</li>
+      <li><b>The ratio stays near 1.</b> Dividing the hypothesis by |<i class="z">g</i>(<i class="z">t</i>)|,
+        <div class="eq sm"><span class="row">|<i class="r">h</i>(<i class="z">t</i>) − 1| = <span class="frac"><span class="n">|<i class="p">f</i>(<i class="z">t</i>) − <i class="z">g</i>(<i class="z">t</i>)|</span><span class="d">|<i class="z">g</i>(<i class="z">t</i>)|</span></span> &lt; 1</span></div></li>
+      <li><b>The ratio does not wind.</b> By (W4), <i class="w">W</i>(<i class="r">h</i>) = 0.</li>
+      <li><b>Conclude with multiplicativity.</b> Since <i class="p">f</i> = <i class="r">h</i><i class="z">g</i>, property (W3) gives
+        <div class="eq sm"><span class="row"><i class="w">W</i>(<i class="p">f</i>) = <i class="w">W</i>(<i class="r">h</i>) + <i class="w">W</i>(<i class="z">g</i>) = 0 + <i class="w">W</i>(<i class="z">g</i>)</span></div></li>
+    </ol>
+    <p class="mut">The strict inequality matters at every single <i class="z">t</i>. Pitfall 2 below shows what goes wrong when the leash is allowed to be too long.</p>
+    <figure class="viz" data-viz="p4"><figcaption>Person g(t) = e<sup>int</sup> (coral), dog f(t) = g(t)(1 + c e<sup>imt</sup>) (teal), tree at the origin. Right: the ratio f/g is the circle of radius c around 1. While c &lt; 1 it avoids the origin and the windings agree. For c &gt; 1 the circle swallows the origin and W(f) = n + m.</figcaption></figure>
+  </article>
+
+  <!-- PART 5 -->
+  <article class="card part pop" id="p5" data-pill="5" data-short="Homotopy" >
+    <span class="pn">5</span>
+    <span class="eyebrow">Part 5 of 8</span>
+    <h3>Homotopy invariance: the winding number is constant in the radius</h3>
+    <div class="thm lem"><span class="tag">Lemma 5</span>
+      <p style="margin-top:0">Let <i class="p">H</i> : [0, 1] × [0, 2π] → ℂ∖{0} be continuous with <i class="p">H</i>(<i class="z">s</i>, 0) = <i class="p">H</i>(<i class="z">s</i>, 2π) for each <i class="z">s</i>. Then <i class="z">s</i> ↦ <i class="w">W</i>(<i class="p">H</i>(<i class="z">s</i>, ·)) is constant.</p></div>
+    <ol class="steps">
+      <li><b>A positive gap.</b> The domain is compact and <i class="p">H</i> never vanishes, so <i class="r">m</i> := min |<i class="p">H</i>| &gt; 0.</li>
+      <li><b>Small steps are leashes.</b> <i class="p">H</i> is uniformly continuous, so there is <i class="r">δ</i> &gt; 0 such that |<i class="z">s</i> − <i class="z">s</i>′| &lt; <i class="r">δ</i> gives
+        <div class="eq sm"><span class="row">|<i class="p">H</i>(<i class="z">s</i>, <i class="z">t</i>) − <i class="p">H</i>(<i class="z">s</i>′, <i class="z">t</i>)| &lt; <i class="r">m</i> ≤ |<i class="p">H</i>(<i class="z">s</i>′, <i class="z">t</i>)| &nbsp; for all <i class="z">t</i></span></div></li>
+      <li><b>Apply Lemma 4.</b> With <i class="p">f</i> = <i class="p">H</i>(<i class="z">s</i>, ·) and <i class="z">g</i> = <i class="p">H</i>(<i class="z">s</i>′, ·), the hypothesis of Lemma 4 holds, so <i class="w">W</i>(<i class="p">H</i>(<i class="z">s</i>, ·)) = <i class="w">W</i>(<i class="p">H</i>(<i class="z">s</i>′, ·)).</li>
+      <li><b>Chain the steps.</b> Pick <i class="w">N</i> with 1/<i class="w">N</i> &lt; <i class="r">δ</i> and compare <i class="z">s</i> = <i class="w">j</i>/<i class="w">N</i> with (<i class="w">j</i>+1)/<i class="w">N</i> for <i class="w">j</i> = 0, …, <i class="w">N</i>−1. All the windings are equal, so <i class="w">W</i>(<i class="p">H</i>(0, ·)) = <i class="w">W</i>(<i class="p">H</i>(1, ·)), and the same argument works between any two values of <i class="z">s</i>.</li>
+      <li><b>Use it for p.</b> Fix any <i class="r">R</i> &gt; 0 and put <i class="p">H</i>(<i class="z">s</i>, <i class="z">t</i>) = <i class="p">p</i>(<i class="z">s</i><i class="r">R</i>e<sup><i class="z u">i</i><i class="z">t</i></sup>). Under the standing assumption that <i class="p">p</i> has no zero, <i class="p">H</i> is continuous, never 0, and closed in <i class="z">t</i>. Therefore
+        <div class="eq sm"><span class="row"><i class="w">W</i>(<i class="p">γ</i><sub>0</sub>) = <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">R</i></sub>)</span><span class="cap">The winding number at radius 0 equals the winding number at every radius R.</span></div></li>
+    </ol>
+    <figure class="viz" data-viz="p5"><figcaption>A straight-line homotopy H(s, t) = f₀(t) + s(f₁(t) − f₀(t)). In the safe scenario the minimum distance m to the origin stays positive and a few leash steps of size δ = m / max|f₁ − f₀| chain the two ends together. In the crossing scenario the curve is dragged over the origin at s = 2/3, m = 0, and the winding number jumps.</figcaption></figure>
+  </article>
+
+  <!-- PART 6 -->
+  <article class="card part pop" id="p6" data-pill="6" data-short="Small circle">
+    <span class="pn">6</span>
+    <span class="eyebrow">Part 6 of 8</span>
+    <h3>The small circle: winding number 0</h3>
+    <div class="eq"><span class="row"><i class="p">γ</i><sub>0</sub>(<i class="z">t</i>) = <i class="p">p</i>(0) = <i class="r">a</i><sub>0</sub> ≠ 0 &nbsp;⟹&nbsp; <i class="w">W</i>(<i class="p">γ</i><sub>0</sub>) = 0</span><span class="cap">The loop of radius 0 is a single point that is not the origin.</span></div>
+    <ol class="steps">
+      <li>At <i class="r">r</i> = 0 we have 0·e<sup><i class="z u">i</i><i class="z">t</i></sup> = 0 for every <i class="z">t</i>, so <i class="p">γ</i><sub>0</sub> is the constant path <i class="r">a</i><sub>0</sub>.</li>
+      <li>By Part 1, <i class="r">a</i><sub>0</sub> ≠ 0 under our assumption. By (W2), <i class="w">W</i>(<i class="p">γ</i><sub>0</sub>) = 0.</li>
+      <li><b>Small positive radii agree.</b> The same conclusion holds for small <i class="r">r</i> &gt; 0 directly. For |<i class="z">z</i>| = <i class="r">r</i>,
+        <div class="eq sm"><span class="row">|<i class="p">p</i>(<i class="z">z</i>) − <i class="r">a</i><sub>0</sub>| ≤ <i class="r">B</i>(<i class="r">r</i>) := Σ<sub><i class="w">k</i>=1</sub><sup><i class="w">n</i></sup> |<i class="r">a</i><sub><i class="w">k</i></sub>| <i class="r">r</i><sup><i class="w">k</i></sup></span><span class="cap">with a<sub>n</sub> = 1 in the monic case.</span></div>
+        <i class="r">B</i> is continuous and increasing with <i class="r">B</i>(0) = 0, so there is <i class="r">r</i><sub>0</sub> &gt; 0 with <i class="r">B</i>(<i class="r">r</i>) &lt; |<i class="r">a</i><sub>0</sub>| for <i class="r">r</i> &lt; <i class="r">r</i><sub>0</sub>. For those radii Lemma 4 applies with <i class="p">f</i> = <i class="p">γ</i><sub><i class="r">r</i></sub> and <i class="z">g</i> ≡ <i class="r">a</i><sub>0</sub>, giving <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">r</i></sub>) = 0. The loop never leaves the disc of radius |<i class="r">a</i><sub>0</sub>| around <i class="r">a</i><sub>0</sub>, and that disc excludes 0.</li>
+    </ol>
+    <figure class="viz" data-viz="p6"><figcaption>The image of a small circle stays inside the bronze disc of radius |a₀| around a₀, which does not contain 0. The dashed ring marks r₀, where the bound B(r) reaches |a₀|. Beyond r₀ the loop may leave the disc, and it winds again only after r passes the modulus of a root.</figcaption></figure>
+  </article>
+
+  <!-- PART 7 -->
+  <article class="card part pop" id="p7" data-pill="7" data-short="Big circle">
+    <span class="pn">7</span>
+    <span class="eyebrow">Part 7 of 8</span>
+    <h3>The big circle: winding number n</h3>
+    <div class="eq"><span class="row"><i class="r">R</i> = 1 + <i class="r">A</i>, &nbsp; <i class="r">A</i> = Σ<sub><i class="w">k</i>=0</sub><sup><i class="w">n</i>−1</sup> |<i class="r">a</i><sub><i class="w">k</i></sub>| &nbsp;⟹&nbsp; <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">R</i></sub>) = <i class="w">n</i></span><span class="cap">Radius 1 plus the sum of the moduli of the lower coefficients.</span></div>
+    <ol class="steps">
+      <li><b>Compare with the leading term.</b> Let |<i class="z">z</i>| = <i class="r">R</i>. Since <i class="r">R</i> ≥ 1 we have <i class="r">R</i><sup><i class="w">k</i></sup> ≤ <i class="r">R</i><sup><i class="w">n</i>−1</sup> for <i class="w">k</i> ≤ <i class="w">n</i>−1, so
+        <div class="eq sm"><span class="row">|<i class="p">p</i>(<i class="z">z</i>) − <i class="z">z</i><sup><i class="w">n</i></sup>| = | Σ<sub><i class="w">k</i>&lt;<i class="w">n</i></sub> <i class="r">a</i><sub><i class="w">k</i></sub><i class="z">z</i><sup><i class="w">k</i></sup> | ≤ Σ<sub><i class="w">k</i>&lt;<i class="w">n</i></sub> |<i class="r">a</i><sub><i class="w">k</i></sub>| <i class="r">R</i><sup><i class="w">k</i></sup> ≤ <i class="r">A</i> <i class="r">R</i><sup><i class="w">n</i>−1</sup></span></div></li>
+      <li><b>The choice of R makes it a leash.</b> Because <i class="r">A</i> &lt; 1 + <i class="r">A</i> = <i class="r">R</i>,
+        <div class="eq sm"><span class="row"><i class="r">A</i> <i class="r">R</i><sup><i class="w">n</i>−1</sup> &lt; <i class="r">R</i><sup><i class="w">n</i></sup> = |<i class="z">z</i><sup><i class="w">n</i></sup>|</span><span class="cap">So |p(z) − z<sup>n</sup>| &lt; |z<sup>n</sup>| everywhere on the circle of radius R.</span></div></li>
+      <li><b>Apply Lemma 4.</b> Take <i class="p">f</i> = <i class="p">γ</i><sub><i class="r">R</i></sub> and <i class="z">g</i>(<i class="z">t</i>) = (<i class="r">R</i>e<sup><i class="z u">i</i><i class="z">t</i></sup>)<sup><i class="w">n</i></sup> = <i class="r">R</i><sup><i class="w">n</i></sup>e<sup><i class="z u">i</i><i class="w">n</i><i class="z">t</i></sup>. Both are closed paths and the leash condition holds for every <i class="z">t</i>. Hence <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">R</i></sub>) = <i class="w">W</i>(<i class="z">g</i>).</li>
+      <li><b>Compute W(g).</b> By (W1) with <i class="r">c</i> = <i class="r">R</i><sup><i class="w">n</i></sup>, <i class="w">W</i>(<i class="z">g</i>) = <i class="w">n</i>. So <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">R</i></sub>) = <i class="w">n</i>.</li>
+    </ol>
+    <p class="mut">The same estimate shows that no root has modulus ≥ <i class="r">R</i>: for |<i class="z">z</i>| ≥ 1 + <i class="r">A</i>, |<i class="p">p</i>(<i class="z">z</i>)| ≥ |<i class="z">z</i>|<sup><i class="w">n</i>−1</sup>(|<i class="z">z</i>| − <i class="r">A</i>) ≥ 1.</p>
+    <figure class="viz" data-viz="p7"><figcaption>Left: the ratio q(t) = p(re<sup>it</sup>) / (re<sup>it</sup>)<sup>n</sup> against the disc |q − 1| &lt; 1. Right: M(r) = max|q − 1| (teal) always lies below the bound A/r (bronze dashed) for r ≥ 1, and the bound falls below 1 at r = A. The blue marker is R = 1 + A. Once M(r) &lt; 1 the leash condition holds and W = n.</figcaption></figure>
+  </article>
+
+  <!-- PART 8 -->
+  <article class="card part pop" id="p8" data-pill="8" data-short="Contradiction">
+    <span class="pn">8</span>
+    <span class="eyebrow">Part 8 of 8</span>
+    <h3>The contradiction</h3>
+    <div class="eq"><span class="row">0 = <i class="w">W</i>(<i class="p">γ</i><sub>0</sub>) = <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">R</i></sub>) = <i class="w">n</i> ≥ 1</span><span class="cap">The first equality is Part 6, the second is Part 5, the third is Part 7. The conclusion is absurd.</span></div>
+    <ol class="steps">
+      <li>Assume <i class="p">p</i> has no zero in ℂ. Then every <i class="p">γ</i><sub><i class="r">r</i></sub> is a closed path avoiding 0 (Part 1), so every <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">r</i></sub>) is a defined integer (Part 3).</li>
+      <li>Part 6 gives <i class="w">W</i>(<i class="p">γ</i><sub>0</sub>) = 0.</li>
+      <li>Part 5, applied with <i class="r">R</i> = 1 + <i class="r">A</i> and the homotopy <i class="p">H</i>(<i class="z">s</i>, <i class="z">t</i>) = <i class="p">p</i>(<i class="z">s</i><i class="r">R</i>e<sup><i class="z u">i</i><i class="z">t</i></sup>), gives <i class="w">W</i>(<i class="p">γ</i><sub>0</sub>) = <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">R</i></sub>).</li>
+      <li>Part 7 gives <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">R</i></sub>) = <i class="w">n</i>.</li>
+      <li>Combining, 0 = <i class="w">n</i>. But <i class="w">n</i> ≥ 1 by hypothesis. This contradiction shows that the assumption was false: <i class="p">p</i> has at least one zero in ℂ. ∎</li>
+    </ol>
+    <h4>Where each hypothesis was used</h4>
+    <ul class="tight">
+      <li><b>n ≥ 1:</b> to contradict W = 0 in the last line. For a constant the two ends agree and nothing is proved, as it must be.</li>
+      <li><b>a<sub>n</sub> ≠ 0:</b> to normalise to a monic polynomial, which makes the leading term z<sup>n</sup> dominate on the big circle.</li>
+      <li><b>No zeros (the assumption):</b> to make every γ<sub>r</sub> avoid 0, so that the winding numbers exist, Lemma 5 applies, and a₀ ≠ 0.</li>
+      <li><b>Coefficients in ℂ:</b> to be able to rotate in a plane, so that circles, exponentials and the leash estimate exist.</li>
+    </ul>
+    <figure class="viz" data-viz="p8"><figcaption>For the chosen polynomial: the blue staircase is W(r), the bronze curve is μ(r) = min|γ<sub>r</sub>| / max|γ<sub>r</sub>|. The staircase changes only where μ touches 0, which happens exactly at the moduli of the roots. For a polynomial without roots μ would stay positive and W could not climb from 0 to n.</figcaption></figure>
+  </article>
+</section>
+
+<section id="cor" data-nav data-title="Corollaries">
+  <span class="eyebrow pop">Corollaries</span>
+  <h2 class="pop">What the root buys you</h2>
+  <p class="pop">Once one root exists, everything else is algebra, plus one more use of the leash lemma. Below, parts (2) to (5) of the theorem and four consequences are proved from part (1).</p>
+
+  <div class="grid2">
+    <div class="mini pop"><h4>Corollary 1. Factorisation</h4>
+      <p><i class="p">p</i> = <i class="r">a</i><sub><i class="w">n</i></sub>(<i class="z">z</i> − <i class="z">z</i><sub>1</sub>)⋯(<i class="z">z</i> − <i class="z">z</i><sub><i class="w">n</i></sub>).</p>
+      <p><b>Proof.</b> Induct on <i class="w">n</i>. For <i class="w">n</i> = 1, <i class="r">a</i><sub>1</sub><i class="z">z</i> + <i class="r">a</i><sub>0</sub> = <i class="r">a</i><sub>1</sub>(<i class="z">z</i> + <i class="r">a</i><sub>0</sub>/<i class="r">a</i><sub>1</sub>). For <i class="w">n</i> ≥ 2, part (1) gives a root <i class="z">z</i><sub>1</sub>. Polynomial division gives <i class="p">p</i>(<i class="z">z</i>) = (<i class="z">z</i> − <i class="z">z</i><sub>1</sub>)<i class="p">q</i>(<i class="z">z</i>) + <i class="r">c</i> with <i class="r">c</i> constant. Putting <i class="z">z</i> = <i class="z">z</i><sub>1</sub> gives <i class="r">c</i> = <i class="p">p</i>(<i class="z">z</i><sub>1</sub>) = 0. Now <i class="p">q</i> has degree <i class="w">n</i> − 1 and leading coefficient <i class="r">a</i><sub><i class="w">n</i></sub>, and the induction hypothesis factors it. ∎</p></div>
+    <div class="mini pop"><h4>Corollary 2. Exactly n roots with multiplicity</h4>
+      <p>The list <i class="z">z</i><sub>1</sub>, …, <i class="z">z</i><sub><i class="w">n</i></sub> is unique up to order.</p>
+      <p><b>Proof.</b> Suppose <i class="r">a</i><sub><i class="w">n</i></sub>∏(<i class="z">z</i> − <i class="z">z</i><sub><i class="w">j</i></sub>) = <i class="r">a</i><sub><i class="w">n</i></sub>∏(<i class="z">z</i> − <i class="z">w</i><sub><i class="w">j</i></sub>). Evaluating at <i class="z">z</i><sub>1</sub> makes the left side 0, so some factor <i class="z">z</i><sub>1</sub> − <i class="z">w</i><sub><i class="w">j</i></sub> vanishes. Cancel the common factor (a product of nonzero polynomials is nonzero) and repeat on the remaining <i class="w">n</i> − 1 factors. ∎ The multiplicity of a root is how many times it appears in the list.</p></div>
+    <div class="mini pop"><h4>Corollary 3. ℂ is algebraically closed</h4>
+      <p>Every irreducible polynomial over ℂ has degree 1, and every finite extension field of ℂ equals ℂ.</p>
+      <p><b>Proof.</b> An irreducible <i class="p">q</i> of degree ≥ 2 has a root <i class="z">z</i><sub>0</sub> by part (1), so (<i class="z">z</i> − <i class="z">z</i><sub>0</sub>) divides it by Corollary 1, a contradiction. If <i class="r">L</i> ⊇ ℂ is a finite extension and <i class="z">α</i> ∈ <i class="r">L</i>, the minimal polynomial of <i class="z">α</i> over ℂ is irreducible, hence linear, hence <i class="z">α</i> ∈ ℂ. ∎</p></div>
+    <div class="mini pop"><h4>Corollary 4. Real polynomials</h4>
+      <p>A real polynomial is a product of real linear factors and real quadratics with negative discriminant.</p>
+      <p><b>Proof.</b> For real coefficients, <i class="p">p</i>(<span style="text-decoration:overline"><i class="z">z</i></span>) = <span style="text-decoration:overline"><i class="p">p</i>(<i class="z">z</i>)</span>, so non-real roots come in pairs <i class="z">w</i>, <span style="text-decoration:overline"><i class="z">w</i></span>. Conjugating the factorisation and using Corollary 2 shows the two have equal multiplicity. Then (<i class="z">z</i> − <i class="z">w</i>)(<i class="z">z</i> − <span style="text-decoration:overline"><i class="z">w</i></span>) = <i class="z">z</i><sup>2</sup> − 2 Re(<i class="z">w</i>)<i class="z">z</i> + |<i class="z">w</i>|<sup>2</sup>, which is real with discriminant −4(Im <i class="z">w</i>)<sup>2</sup> &lt; 0. ∎</p></div>
+    <div class="mini pop"><h4>Corollary 5. Odd degree has a real root</h4>
+      <p>A real polynomial of odd degree has at least one real root.</p>
+      <p><b>Proof.</b> By Corollary 4 the non-real roots, counted with multiplicity, pair up, so their number is even. The total is <i class="w">n</i>, which is odd, so at least one root is real. ∎</p></div>
+    <div class="mini pop"><h4>Corollary 6. Eigenvalues</h4>
+      <p>Every complex <i class="w">n</i> × <i class="w">n</i> matrix <i class="p">M</i> with <i class="w">n</i> ≥ 1 has an eigenvalue.</p>
+      <p><b>Proof.</b> det(<i class="z">λ</i><i class="p">I</i> − <i class="p">M</i>) is a monic polynomial of degree <i class="w">n</i> in <i class="z">λ</i>. It has a root <i class="z">λ</i><sub>0</sub>, so <i class="z">λ</i><sub>0</sub><i class="p">I</i> − <i class="p">M</i> is singular and has a nonzero kernel vector. ∎ Repeating on a complement gives triangularisation (Schur form).</p></div>
+    <div class="mini pop"><h4>Corollary 7. A bound on all roots</h4>
+      <p>Every root satisfies |<i class="z">z</i>| &lt; 1 + Σ<sub><i class="w">k</i>&lt;<i class="w">n</i></sub> |<i class="r">a</i><sub><i class="w">k</i></sub>/<i class="r">a</i><sub><i class="w">n</i></sub>|.</p>
+      <p><b>Proof.</b> Normalise to monic and put <i class="r">R</i> = 1 + <i class="r">A</i>. For |<i class="z">z</i>| ≥ <i class="r">R</i>, |<i class="p">p</i>(<i class="z">z</i>)| ≥ |<i class="z">z</i>|<sup><i class="w">n</i></sup> − <i class="r">A</i>|<i class="z">z</i>|<sup><i class="w">n</i>−1</sup> = |<i class="z">z</i>|<sup><i class="w">n</i>−1</sup>(|<i class="z">z</i>| − <i class="r">A</i>) ≥ 1 &gt; 0. ∎</p></div>
+    <div class="mini pop"><h4>Corollary 8. Counting zeros in a disc</h4>
+      <p>This is part (5) of the theorem. If <i class="p">p</i> has no zero on |<i class="z">z</i>| = <i class="r">R</i>, then <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">R</i></sub>) equals the number of zeros of <i class="p">p</i> in |<i class="z">z</i>| &lt; <i class="r">R</i>.</p>
+      <p><b>Proof.</b> Write <i class="p">γ</i><sub><i class="r">R</i></sub>(<i class="z">t</i>) = <i class="r">a</i><sub><i class="w">n</i></sub>∏(<i class="r">R</i>e<sup><i class="z u">i</i><i class="z">t</i></sup> − <i class="z">z</i><sub><i class="w">j</i></sub>) and use (W2), (W3). For a factor with |<i class="z">z</i><sub><i class="w">j</i></sub>| &lt; <i class="r">R</i>, the leash lemma with <i class="z">g</i> = <i class="r">R</i>e<sup><i class="z u">i</i><i class="z">t</i></sup> gives winding 1, since |<i class="z">z</i><sub><i class="w">j</i></sub>| &lt; <i class="r">R</i> = |<i class="z">g</i>|. For |<i class="z">z</i><sub><i class="w">j</i></sub>| &gt; <i class="r">R</i>, the leash lemma with the constant <i class="z">g</i> ≡ −<i class="z">z</i><sub><i class="w">j</i></sub> gives winding 0, since the distance moved is <i class="r">R</i> &lt; |<i class="z">z</i><sub><i class="w">j</i></sub>|. Summing the windings counts the roots inside. ∎</p></div>
+  </div>
+
+  <div class="eq pop"><span class="row"><i class="w">W</i>( <i class="p">γ</i><sub><i class="r">R</i></sub> ) = #{ <i class="w">j</i> : |<i class="z">z</i><sub><i class="w">j</i></sub>| &lt; <i class="r">R</i> }</span><span class="cap">Corollary 8: the winding number counts the roots inside the circle, with multiplicity. Part 8's staircase is this formula plotted against R.</span></div>
+
+  <h4 class="pop">Roots lab</h4>
+  <p class="pop">Enter your own polynomial, coefficients from the highest power down, separated by spaces. Real and complex entries both work (for example <code>1 0 -1</code> or <code>1 -2i 3+1i</code>). Move the radius and compare the winding number with the number of roots inside the circle.</p>
+  <figure class="viz pop" data-viz="lab"><figcaption>The roots come from a numerical root finder, the winding number from the sampled path. Corollary 8 says the two counts agree whenever the circle avoids the roots.</figcaption></figure>
+</section>
+
+<section id="examples" data-nav data-title="Examples">
+  <span class="eyebrow pop">Worked examples</span>
+  <h2 class="pop">Five polynomials, checked</h2>
+  <p class="pop">In each case R = 1 + A is the radius from Part 7, and every number below was computed independently with high precision and compared with the winding number of the sampled loop.</p>
+
+  <article class="card pop">
+    <h3>Example 1. <i class="p">p</i>(<i class="z">z</i>) = <i class="z">z</i><sup>3</sup> − 1</h3>
+    <p>The roots are 1 and −½ ± (√3/2)<i class="z u">i</i>, all of modulus 1. Here <i class="r">A</i> = 1, so <i class="r">R</i> = 2. For <i class="r">r</i> &lt; 1 the image is the circle of radius <i class="r">r</i><sup>3</sup> &lt; 1 centred at −1, which excludes 0. For <i class="r">r</i> &gt; 1 it is the circle of radius <i class="r">r</i><sup>3</sup> &gt; 1 traced three times around −1, which contains 0.</p>
+    <div class="tbl"><table class="data"><tr><th>radius r</th><th>roots inside</th><th>W(γ<sub>r</sub>)</th></tr><tr><td>1/2</td><td>0</td><td>0</td></tr><tr><td>3/2</td><td>3</td><td>3</td></tr><tr><td>2 = R</td><td>3</td><td>3 = n</td></tr></table></div>
+    <figure class="viz" data-viz="ex0"><figcaption>z³ − 1: the winding number jumps from 0 to 3 at r = 1, where all three roots sit.</figcaption></figure>
+  </article>
+
+  <article class="card pop">
+    <h3>Example 2. <i class="p">p</i>(<i class="z">z</i>) = <i class="z">z</i><sup>4</sup> + <i class="z">z</i> + 1</h3>
+    <p>The roots are −0.72714 ± 0.43001<i class="z u">i</i> (modulus ≈ 0.8448) and 0.72714 ± 0.93410<i class="z u">i</i> (modulus ≈ 1.1838). Here <i class="r">A</i> = 2, so <i class="r">R</i> = 3. The staircase has two steps of height 2, at 0.8448 and at 1.1838. This is the polynomial of the hero picture.</p>
+    <div class="tbl"><table class="data"><tr><th>radius r</th><th>roots inside</th><th>W(γ<sub>r</sub>)</th></tr><tr><td>1/2</td><td>0</td><td>0</td></tr><tr><td>1</td><td>2</td><td>2</td></tr><tr><td>3/2</td><td>4</td><td>4</td></tr><tr><td>3 = R</td><td>4</td><td>4 = n</td></tr></table></div>
+    <figure class="viz" data-viz="ex1"><figcaption>z⁴ + z + 1: two steps of height 2.</figcaption></figure>
+  </article>
+
+  <article class="card pop">
+    <h3>Example 3. <i class="p">p</i>(<i class="z">z</i>) = (<i class="z">z</i> − 1)<sup>2</sup> = <i class="z">z</i><sup>2</sup> − 2<i class="z">z</i> + 1</h3>
+    <p>One root, 1, of multiplicity 2. Here <i class="r">A</i> = 2 + 1 = 3, so <i class="r">R</i> = 4. By (W3), <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">r</i></sub>) = 2 <i class="w">W</i>(<i class="r">r</i>e<sup><i class="z u">i</i><i class="z">t</i></sup> − 1), which is 2 for <i class="r">r</i> &gt; 1 and 0 for <i class="r">r</i> &lt; 1. A single step of height 2 is the multiplicity made visible.</p>
+    <div class="tbl"><table class="data"><tr><th>radius r</th><th>roots inside (with multiplicity)</th><th>W(γ<sub>r</sub>)</th></tr><tr><td>1/2</td><td>0</td><td>0</td></tr><tr><td>3/2</td><td>2</td><td>2</td></tr><tr><td>4 = R</td><td>2</td><td>2 = n</td></tr></table></div>
+    <figure class="viz" data-viz="ex2"><figcaption>(z − 1)²: one root of multiplicity 2 gives one step of height 2.</figcaption></figure>
+  </article>
+
+  <article class="card pop">
+    <h3>Example 4. <i class="p">p</i>(<i class="z">z</i>) = <i class="z">z</i><sup>2</sup> − 2<i class="z">z</i> + 2</h3>
+    <p>Real coefficients and no real root. Writing <i class="p">p</i> = (<i class="z">z</i> − 1)<sup>2</sup> + 1 shows the roots 1 ± <i class="z u">i</i>, a conjugate pair of modulus √2 ≈ 1.4142 (Corollary 4). Here <i class="r">A</i> = 4, so <i class="r">R</i> = 5.</p>
+    <div class="tbl"><table class="data"><tr><th>radius r</th><th>roots inside</th><th>W(γ<sub>r</sub>)</th></tr><tr><td>1</td><td>0</td><td>0</td></tr><tr><td>3/2</td><td>2</td><td>2</td></tr><tr><td>5 = R</td><td>2</td><td>2 = n</td></tr></table></div>
+    <figure class="viz" data-viz="ex3"><figcaption>z² − 2z + 2: the curve touches 0 at r = √2, the common modulus of 1 ± i.</figcaption></figure>
+  </article>
+
+  <article class="card pop">
+    <h3>Example 5. <i class="p">p</i>(<i class="z">z</i>) = <i class="z">z</i><sup>5</sup> + 3<i class="z">z</i> + 1</h3>
+    <p>The roots are −0.33199 (real), −0.83907 ± 0.94385<i class="z u">i</i> (modulus ≈ 1.2629) and 1.00507 ± 0.93726<i class="z u">i</i> (modulus ≈ 1.3743). Here <i class="r">A</i> = 4, so <i class="r">R</i> = 5. You can see the single root in the unit disc by hand with the leash lemma: on |<i class="z">z</i>| = 1,
+      <span class="dim">|</span><i class="p">p</i>(<i class="z">z</i>) − 3<i class="z">z</i><span class="dim">|</span> = |<i class="z">z</i><sup>5</sup> + 1| ≤ 2 &lt; 3 = |3<i class="z">z</i>|, so <i class="w">W</i>(<i class="p">γ</i><sub>1</sub>) = <i class="w">W</i>(3e<sup><i class="z u">i</i><i class="z">t</i></sup>) = 1.</p>
+    <div class="tbl"><table class="data"><tr><th>radius r</th><th>roots inside</th><th>W(γ<sub>r</sub>)</th></tr><tr><td>1/2</td><td>1</td><td>1</td></tr><tr><td>1</td><td>1</td><td>1</td></tr><tr><td>3/2</td><td>5</td><td>5</td></tr><tr><td>5 = R</td><td>5</td><td>5 = n</td></tr></table></div>
+    <figure class="viz" data-viz="ex4"><figcaption>z⁵ + 3z + 1: a step of 1 at 0.332, then three steps (1, 2, 1) between 1.26 and 1.38.</figcaption></figure>
+  </article>
+</section>
+
+<section id="pitfalls" data-nav data-title="Pitfalls">
+  <span class="eyebrow pop">Pitfalls</span>
+  <h2 class="pop">Three ways the argument breaks</h2>
+  <div class="card pop">
+    <h3>1. A radius that hits a root</h3>
+    <p>At <i class="r">r</i> equal to the modulus of a root, the loop passes through 0 and the winding number is not defined. The proof never evaluates <i class="w">W</i> there, and the numerical diagrams show a warning near such radii. The staircase has a step at that radius, not a value.</p>
+    <figure class="viz" data-viz="pitA"><figcaption>z² − 2z + 2 near r = √2 ≈ 1.4142. Just below, the loop misses 0 and W = 0. Just above, W = 2. At the radius itself the curve touches the origin.</figcaption></figure>
+  </div>
+  <div class="card pop">
+    <h3>2. Unsigned crossings are not winding</h3>
+    <p>A tempting shortcut is to count how often the loop crosses the negative real axis. That count is wrong unless each crossing carries a sign: upward +1, downward −1. The signed total equals W, while the unsigned count does not. The lift in Part 2 keeps the signs automatically.</p>
+    <figure class="viz" data-viz="pitB"><figcaption>The loop f(t) = −2.2 + cos t + i( sin t + w sin 7t ) stays left of 0 and never surrounds it. As the wobble w grows it crosses the negative axis more and more often, but upward and downward crossings cancel, so W stays 0.</figcaption></figure>
+  </div>
+  <div class="card pop">
+    <h3>3. The field matters</h3>
+    <p>The theorem is about complex roots. <i class="z">x</i><sup>2</sup> + 1 has no real root, yet its two roots ±<i class="z u">i</i> exist. A polynomial with real coefficients can lose its real roots as a coefficient changes, and the roots then leave the real line in a conjugate pair rather than disappear.</p>
+    <figure class="viz" data-viz="pitC"><figcaption>Roots of x² + b as b changes. For b &lt; 0 they are real. At b = 0 they collide at 0. For b &gt; 0 they step off the real axis as a conjugate pair. The count stays 2.</figcaption></figure>
+  </div>
+  <div class="card pop">
+    <h4 style="margin-top:0">More small traps</h4>
+    <ul class="tight">
+      <li>Writing the proof for a nonconstant polynomial but forgetting that Lemma 5 needs the loop to avoid 0 for <b>every</b> radius at once, not just the two ends.</li>
+      <li>Using the principal argument as if it were continuous. It jumps by 2π, and only the lift of Part 2 is a continuous argument.</li>
+      <li>Applying Lemma 4 with a non-strict inequality. If |f − g| ≤ |g| the leash can reach the tree, and f may vanish.</li>
+      <li>Forgetting that W is only defined for closed paths. A path that does not return to its start has a fractional total argument change.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="exercises" data-nav data-title="Exercises">
+  <span class="eyebrow pop">Exercises</span>
+  <h2 class="pop">Eight problems, with hints</h2>
+  <figure class="viz pop" data-viz="ex"><figcaption>A winding number challenge. A polynomial and a radius are chosen. Look at the curve, type an integer, and press Check. The answer is computed from the sampled path.</figcaption></figure>
+  <div class="out pop" id="exout" style="border:1px solid var(--line);border-radius:12px;margin-bottom:1rem;background:var(--card2)">Press Check after entering a value.</div>
+
+  <div class="grid2">
+    <div class="mini pop"><h4>Exercise 1</h4><p>Compute <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">r</i></sub>) for <i class="p">p</i>(<i class="z">z</i>) = <i class="z">z</i><sup>3</sup> − 1 with <i class="r">r</i> = 1/2 and with <i class="r">r</i> = 2, and justify each.</p>
+      <details><summary>Hint</summary>For <i>r</i> = 1/2 use |<i>p</i> + 1| = <i>r</i><sup>3</sup> &lt; 1. For <i>r</i> = 2 compare with <i>z</i><sup>3</sup>.</details>
+      <details><summary>Solution</summary>At <i>r</i> = 1/2, |<i>p</i>(<i>z</i>) − (−1)| = 1/8 &lt; 1 = |−1|, so <i>W</i> = <i>W</i>(−1) = 0. At <i>r</i> = 2, |<i>p</i> − <i>z</i><sup>3</sup>| = 1 &lt; 8 = |<i>z</i><sup>3</sup>|, so <i>W</i> = <i>W</i>(8e<sup>3<i>it</i></sup>) = 3.</details></div>
+    <div class="mini pop"><h4>Exercise 2</h4><p>Show that <i class="z">z</i><sup>5</sup> + 3<i class="z">z</i> + 1 has exactly one zero in |<i class="z">z</i>| &lt; 1.</p>
+      <details><summary>Hint</summary>Compare with 3<i>z</i> on |<i>z</i>| = 1 using Lemma 4, then use Corollary 8.</details>
+      <details><summary>Solution</summary>On |<i>z</i>| = 1, |<i>p</i>(<i>z</i>) − 3<i>z</i>| = |<i>z</i><sup>5</sup> + 1| ≤ 2 &lt; 3 = |3<i>z</i>|. So <i>W</i>(<i>γ</i><sub>1</sub>) = <i>W</i>(3e<sup><i>it</i></sup>) = 1, and by Corollary 8 there is one zero inside. Numerically it is −0.33199.</details></div>
+    <div class="mini pop"><h4>Exercise 3</h4><p>Show that all roots of <i class="z">z</i><sup>4</sup> + <i class="z">z</i> + 1 satisfy |<i class="z">z</i>| &lt; 2, which is better than the bound 3 from Corollary 7.</p>
+      <details><summary>Hint</summary>Use the radius 2 directly in the leash lemma.</details>
+      <details><summary>Solution</summary>On |<i>z</i>| = 2, |<i>z</i> + 1| ≤ 3 &lt; 16 = |<i>z</i><sup>4</sup>|. So <i>W</i>(<i>γ</i><sub>2</sub>) = 4 and all four roots lie in |<i>z</i>| &lt; 2. In fact the largest modulus is about 1.1838.</details></div>
+    <div class="mini pop"><h4>Exercise 4</h4><p>For a closed path <i class="p">f</i> avoiding 0, prove <i class="w">W</i>(1/<i class="p">f</i>) = −<i class="w">W</i>(<i class="p">f</i>) and <i class="w">W</i>(<span style="text-decoration:overline"><i class="p">f</i></span>) = −<i class="w">W</i>(<i class="p">f</i>).</p>
+      <details><summary>Hint</summary>If <i>φ</i> lifts <i>f</i>, what lifts 1/<i>f</i>? What lifts the conjugate?</details>
+      <details><summary>Solution</summary>e<sup>−<i>φ</i></sup> = 1/<i>f</i>, so −<i>φ</i> is a lift and the difference at the endpoints changes sign. For the conjugate, <span style="text-decoration:overline">e<sup><i>φ</i></sup></span> = e<sup><span style="text-decoration:overline"><i>φ</i></span></sup>, and <span style="text-decoration:overline"><i>φ</i></span>(2π) − <span style="text-decoration:overline"><i>φ</i></span>(0) is the conjugate of <i>φ</i>(2π) − <i>φ</i>(0) = 2π<i>iW</i>, which is −2π<i>iW</i>.</details></div>
+    <div class="mini pop"><h4>Exercise 5</h4><p>Show that a closed path lying inside an open disc that does not contain 0 has winding number 0.</p>
+      <details><summary>Hint</summary>Let the disc have centre <i>c</i> and radius <i>ρ</i> &lt; |<i>c</i>|, and use Lemma 4 with the constant path <i>c</i>.</details>
+      <details><summary>Solution</summary>If |<i>f</i>(<i>t</i>) − <i>c</i>| &lt; <i>ρ</i> and the disc misses 0, then <i>ρ</i> ≤ |<i>c</i>|, so |<i>f</i> − <i>c</i>| &lt; |<i>c</i>|. Lemma 4 gives <i>W</i>(<i>f</i>) = <i>W</i>(<i>c</i>) = 0.</details></div>
+    <div class="mini pop"><h4>Exercise 6</h4><p>Prove: if <i class="p">p</i> has no zero in the closed disc |<i class="z">z</i>| ≤ <i class="r">R</i>, then <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">R</i></sub>) = 0.</p>
+      <details><summary>Hint</summary>This is Parts 5 and 6 with the assumption restricted to a disc.</details>
+      <details><summary>Solution</summary>The homotopy <i>H</i>(<i>s</i>, <i>t</i>) = <i>p</i>(<i>sR</i>e<sup><i>it</i></sup>) is nonvanishing because |<i>sRe<sup>it</sup></i>| ≤ <i>R</i>. By Lemma 5, <i>W</i>(<i>γ</i><sub><i>R</i></sub>) = <i>W</i>(<i>γ</i><sub>0</sub>) = 0.</details></div>
+    <div class="mini pop"><h4>Exercise 7</h4><p>A real quartic has no real root. Show it is a product of two real quadratics.</p>
+      <details><summary>Hint</summary>Pair the four roots into conjugate pairs.</details>
+      <details><summary>Solution</summary>The four roots are non-real, so they form two conjugate pairs <i>w</i>, <span style="text-decoration:overline"><i>w</i></span> and <i>v</i>, <span style="text-decoration:overline"><i>v</i></span>. Each pair gives a real quadratic (<i>z</i> − <i>w</i>)(<i>z</i> − <span style="text-decoration:overline"><i>w</i></span>), and the quartic is their product times its leading coefficient.</details></div>
+    <div class="mini pop"><h4>Exercise 8</h4><p>Let <i class="z">w</i> be a root of multiplicity <i class="w">m</i> and the only root on |<i class="z">z</i>| = |<i class="z">w</i>|. Show that <i class="w">W</i>(<i class="p">γ</i><sub><i class="r">r</i></sub>) jumps by <i class="w">m</i> as <i class="r">r</i> crosses |<i class="z">w</i>|.</p>
+      <details><summary>Hint</summary>Use Corollary 8 for radii just below and just above |<i>w</i>|.</details>
+      <details><summary>Solution</summary>For <i>r</i> slightly below |<i>w</i>| the number of roots inside is <i>k</i>, and for <i>r</i> slightly above it is <i>k</i> + <i>m</i>, since only <i>w</i> (counted <i>m</i> times) enters. Corollary 8 turns these counts into the winding numbers.</details></div>
+  </div>
+</section>
+
+<section id="beyond" data-nav data-title="Beyond">
+  <span class="eyebrow pop">Generalisations</span>
+  <h2 class="pop">Where the same idea goes</h2>
+  <div class="grid2">
+    <div class="mini pop"><h4>The argument principle</h4>
+      <p>If <i class="p">f</i> is differentiable and <i class="z">φ</i> lifts it, then e<sup><i class="z">φ</i></sup> = <i class="p">f</i> gives <i class="z">φ</i>′ = <i class="p">f</i>′/<i class="p">f</i>. Integrating over [0, 2π] and substituting <i class="p">f</i>(<i class="z">t</i>) = <i class="p">p</i>(<i class="r">R</i>e<sup><i class="z u">i</i><i class="z">t</i></sup>), with d<i class="z">z</i> = <i class="z u">i</i><i class="r">R</i>e<sup><i class="z u">i</i><i class="z">t</i></sup>d<i class="z">t</i>, turns the winding number into a contour integral. This is the bridge to complex analysis.</p></div>
+    <div class="mini pop"><h4>Rouché's theorem</h4>
+      <p>If <i class="p">f</i> and <i class="z">g</i> are holomorphic near a closed disc and |<i class="p">f</i> − <i class="z">g</i>| &lt; |<i class="z">g</i>| on its boundary circle, then <i class="p">f</i> and <i class="z">g</i> have the same number of zeros inside. The proof is Lemma 4 together with the argument principle. Exercise 2 is a polynomial instance.</p></div>
+    <div class="mini pop"><h4>Degree theory</h4>
+      <p>Replacing the loop by its direction <i class="p">f</i>/|<i class="p">f</i>| gives a map from the circle to the circle, and <i class="w">W</i> is its degree. Homotopy invariance (Lemma 5) is the fact that degree is a homotopy invariant, which is behind the statement that the fundamental group of the circle is ℤ. A similar winding argument is a standard route to the two-dimensional Brouwer fixed point theorem.</p></div>
+    <div class="mini pop"><h4>Other proofs</h4>
+      <p>Common alternatives are the minimum modulus argument in the d'Alembert–Argand tradition, a proof by Liouville's theorem, and a Galois theory proof that uses only that real odd degree polynomials have real roots. Each uses a different corner of mathematics, which is part of why the theorem is a favourite.</p></div>
+    <div class="mini pop"><h4>Where it stops</h4>
+      <p>The statement is special to ℂ. Over the quaternions the equation <i class="z">x</i><sup>2</sup> + 1 = 0 has infinitely many solutions, and a root existence theorem for a restricted class of quaternionic polynomials is commonly credited to Niven in the 1940s and to Eilenberg and Niven shortly after.</p></div>
+  </div>
+  <div class="eq pop"><span class="row"><i class="w">W</i>( <i class="p">p</i>(<i class="r">R</i>e<sup><i class="z u">i</i><i class="z">t</i></sup>) ) = <span class="frac"><span class="n">1</span><span class="d">2π<i class="z u">i</i></span></span> <span class="intg"><span class="sym">∮</span><span class="lims"><span><i class="z">|z|</i>=<i class="r">R</i></span></span></span> <span class="frac"><span class="n"><i class="p">p</i>′(<i class="z">z</i>)</span><span class="d"><i class="p">p</i>(<i class="z">z</i>)</span></span> d<i class="z">z</i> = #{ zeros in |<i class="z">z</i>| &lt; <i class="r">R</i> }</span><span class="cap">The argument principle for a polynomial. The middle expression is the winding number in integral form.</span></div>
+  <p class="pop">The picture below paints the plane by the argument of <i class="p">p</i>: colour is the direction of <i class="p">p</i>(<i class="z">z</i>), so each zero is a point where every colour meets. Walking around a circle and counting how many times the colour wheel is traversed counts the zeros inside.</p>
+  <figure class="viz pop" data-viz="dom"><figcaption>Domain colouring of p. Each root is a point where all colours meet. Walk the coral circle once and count the colour cycles: that number is W(γ<sub>r</sub>) and also the number of roots inside.</figcaption></figure>
+</section>
+
+<section id="conclusion" data-nav data-title="Conclusion">
+  <span class="eyebrow pop">Conclusion</span>
+  <h2 class="pop">What to carry away</h2>
+  <div class="grid2">
+    <div class="mini pop"><h4>Takeaways</h4>
+      <ul class="tight">
+        <li>A closed path in ℂ∖{0} has an integer winding number, defined through a continuous logarithm.</li>
+        <li>If |f − g| &lt; |g| at every point, f and g wind the same number of times (the leash lemma).</li>
+        <li>So the winding number of p(re<sup>it</sup>) is constant in r unless a loop touches 0, and touching 0 is a root.</li>
+        <li>At r = 0 the winding number is 0, at r = 1 + Σ|a<sub>k</sub>| it is n. Hence a root exists.</li>
+        <li>The same bookkeeping counts roots in any disc.</li>
+      </ul></div>
+    <div class="mini pop"><h4>Where to go next</h4>
+      <ul class="tight">
+        <li>Complex analysis: the argument principle, Rouché's theorem and Liouville's proof.</li>
+        <li>Algebraic topology: the fundamental group of the circle and degree theory.</li>
+        <li>Algebra: the Galois theory proof, and what algebraic closure means for fields.</li>
+        <li>Numerics: root finding by tracking the winding number over a grid of discs.</li>
+      </ul></div>
+  </div>
+  <p class="pop">One last look at the whole proof, in eight steps.</p>
+  <figure class="viz pop" data-viz="recap"><div class="vtxt" id="recaptxt"></div><figcaption>The eight parts light up in turn. Touch the slider to step through them yourself.</figcaption></figure>
+
+  <h4 class="pop">References</h4>
+  <p class="pop mut">Standard sources for this argument and its relatives. Editions and years vary, so check the edition you can obtain.</p>
+  <ol class="pop tight" style="max-width:70ch">
+    <li>L. V. Ahlfors, <i>Complex Analysis</i>. Treats the argument principle and Rouché's theorem.</li>
+    <li>J. B. Conway, <i>Functions of One Complex Variable I</i>. A careful treatment of winding numbers and the argument principle.</li>
+    <li>A. Hatcher, <i>Algebraic Topology</i>. Proves the theorem via the fundamental group of the circle.</li>
+    <li>B. Fine and G. Rosenberger, <i>The Fundamental Theorem of Algebra</i>. A survey of many proofs and their history.</li>
+    <li>R. Remmert, the chapter on the fundamental theorem in <i>Numbers</i> by Ebbinghaus et al. A historical and mathematical account.</li>
+    <li>T. Needham, <i>Visual Complex Analysis</i>. Geometric treatment of winding and the dog on a leash picture.</li>
+    <li>R. Courant and H. Robbins, <i>What Is Mathematics?</i>. An accessible exposition of a topological proof.</li>
+  </ol>
+</section>
+
+</main>
+
+<footer>
+  <div style="max-width:1060px;margin:0 auto">Roots by Winding Numbers. A single page, built with canvas and plain CSS. Dates and credits in the history section are the commonly cited ones and are hedged where sources differ.</div>
+</footer>
+
+<div class="fabs" aria-label="Page controls">
+  <button class="fab" id="fplay" type="button" aria-label="Play or pause auto-scroll" title="Auto-scroll">▶</button>
+  <button class="fab" id="fspeed" type="button" aria-label="Change auto-scroll speed" title="Speed">1×</button>
+  <button class="fab" id="ftop" type="button" aria-label="Back to top" title="Back to top">↑</button>
+</div>
+<script>
+(function(){
+'use strict';
+var TAU=Math.PI*2;
+function $(s,r){return (r||document).querySelector(s)}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+var RM=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
+var COL={};
+function readCols(){
+  var cs=getComputedStyle(document.documentElement);
+  function g(n){return cs.getPropertyValue(n).trim()}
+  COL={c1:g('--c1'),c2:g('--c2'),c3:g('--c3'),c4:g('--c4'),fg:g('--fg'),mut:g('--mut'),line:g('--line'),grid:g('--grid'),panel:g('--panel'),sym:g('--sym'),card2:g('--card2')};
+}
+readCols();
+var FB="'Plus Jakarta Sans',system-ui,sans-serif", FM="'STIX Two Text','Times New Roman',serif";
+
+/* ---------- complex numbers as [re,im] ---------- */
+function cmul(a,b){return [a[0]*b[0]-a[1]*b[1],a[0]*b[1]+a[1]*b[0]]}
+function cdiv(a,b){var d=b[0]*b[0]+b[1]*b[1];return [(a[0]*b[0]+a[1]*b[1])/d,(a[1]*b[0]-a[0]*b[1])/d]}
+function csub(a,b){return [a[0]-b[0],a[1]-b[1]]}
+function cabs(a){return Math.hypot(a[0],a[1])}
+function ev(c,z){var r=[0,0];for(var i=0;i<c.length;i++){r=cmul(r,z);r[0]+=c[i][0];r[1]+=c[i][1];}return r}
+function R2C(a){return a.map(function(x){return [x,0]})}
+function roots(c){
+  var n=c.length-1;if(n<1)return [];
+  var lead=c[0],m=c.map(function(a){return cdiv(a,lead)});
+  var mx=0;for(var i=1;i<m.length;i++)mx=Math.max(mx,cabs(m[i]));
+  var rad=clamp(0.5*(1+mx),0.9,8),r=[],k,it,j;
+  for(k=0;k<n;k++){var t=TAU*k/n+0.4;r.push([rad*Math.cos(t),rad*Math.sin(t)]);}
+  for(it=0;it<700;it++){
+    for(k=0;k<n;k++){
+      var d=[1,0];
+      for(j=0;j<n;j++)if(j!==k)d=cmul(d,csub(r[k],r[j]));
+      if(cabs(d)<1e-300)d=[1e-300,0];
+      var q=cdiv(ev(m,r[k]),d);
+      r[k]=csub(r[k],q);
+    }
+  }
+  return r.map(function(z){return [isFinite(z[0])?z[0]:0,isFinite(z[1])?z[1]:0]});
+}
+/* winding of p(r e^{it}); returns total turns (float), min and max modulus */
+function wind(c,r,N){
+  N=N||720;var tot=0,prev=0,mn=1e18,mx=0;
+  for(var k=0;k<=N;k++){
+    var t=TAU*k/N,w=ev(c,[r*Math.cos(t),r*Math.sin(t)]),m=cabs(w);
+    if(m<mn)mn=m;if(m>mx)mx=m;
+    var a=Math.atan2(w[1],w[0]);
+    if(k>0){var d=a-prev;if(d>Math.PI)d-=TAU;else if(d<-Math.PI)d+=TAU;tot+=d;}
+    prev=a;
+  }
+  return {w:tot/TAU,min:mn,max:mx};
+}
+function windFn(f,N){
+  N=N||800;var tot=0,prev=0;
+  for(var k=0;k<=N;k++){
+    var p=f(TAU*k/N),a=Math.atan2(p[1],p[0]);
+    if(k>0){var d=a-prev;if(d>Math.PI)d-=TAU;else if(d<-Math.PI)d+=TAU;tot+=d;}
+    prev=a;
+  }
+  return tot/TAU;
+}
+var POLYS={
+  z4:{n:'z⁴ + z + 1',c:R2C([1,0,0,1,1])},
+  z3:{n:'z³ − 1',c:R2C([1,0,0,-1])},
+  sq:{n:'(z − 1)²',c:R2C([1,-2,1])},
+  q2:{n:'z² − 2z + 2',c:R2C([1,-2,2])},
+  z5:{n:'z⁵ + 3z + 1',c:R2C([1,0,0,0,3,1])}
+};
+var POLYOPTS=Object.keys(POLYS).map(function(k){return [k,POLYS[k].n]});
+function polyInfo(c,rMaxOver,wantStair){
+  var rs=roots(c),n=c.length-1,mm=0,i;
+  for(i=0;i<rs.length;i++)mm=Math.max(mm,cabs(rs[i]));
+  var A=0;for(i=1;i<c.length;i++)A+=cabs(cdiv(c[i],c[0]));
+  var rMax=rMaxOver||(Math.max(1.25*mm,0.6)+0.25);
+  var P={c:c,n:n,rs:rs,mods:rs.map(cabs),mm:mm,A:A,rMax:rMax,S:null};
+  if(wantStair){
+    var S=[{r:0,w:0,mu:1}],last=0;
+    for(var k=1;k<=240;k++){
+      var r=rMax*k/240,q=wind(c,r,540),wr=Math.round(q.w);
+      if(Math.abs(q.w-wr)>0.3)wr=last;
+      last=wr;S.push({r:r,w:wr,mu:q.min/Math.max(q.max,1e-12)});
+    }
+    P.S=S;
+  }
+  return P;
+}
+
+/* ---------- drawing helpers ---------- */
+function rr(ctx,x,y,w,h,rad){
+  ctx.beginPath();ctx.moveTo(x+rad,y);ctx.arcTo(x+w,y,x+w,y+h,rad);ctx.arcTo(x+w,y+h,x,y+h,rad);
+  ctx.arcTo(x,y+h,x,y,rad);ctx.arcTo(x,y,x+w,y,rad);ctx.closePath();
+}
+function panelBG(ctx,r){ctx.fillStyle=COL.panel;rr(ctx,r.x,r.y,r.w,r.h,12);ctx.fill();ctx.strokeStyle=COL.line;ctx.lineWidth=1;ctx.stroke();}
+function pview(r,cx,cy,ext){
+  var sc=Math.min(r.w,r.h)/(2*ext);
+  return {r:r,cx:cx,cy:cy,sc:sc,ext:ext,
+    X:function(re){return r.x+r.w/2+(re-cx)*sc},
+    Y:function(im){return r.y+r.h/2-(im-cy)*sc}};
+}
+function niceStep(ext){
+  var raw=ext/2.5,p=Math.pow(10,Math.floor(Math.log(raw)/Math.LN10)),m=raw/p;
+  return (m<1.5?1:m<3.5?2:m<7.5?5:10)*p;
+}
+function txt(ctx,s,x,y,col,size,align,font,weight){
+  ctx.fillStyle=col;ctx.textAlign=align||'left';ctx.textBaseline='alphabetic';
+  ctx.font=(weight||'600')+' '+(size||12)+'px '+(font||FB);ctx.fillText(s,x,y);
+}
+function axes(ctx,pv,lab){
+  var r=pv.r;ctx.save();ctx.beginPath();ctx.rect(r.x,r.y,r.w,r.h);ctx.clip();
+  var st=niceStep(pv.ext),k,x,y;
+  var x0=Math.ceil((pv.cx-r.w/2/pv.sc)/st)*st,x1=pv.cx+r.w/2/pv.sc;
+  var y0=Math.ceil((pv.cy-r.h/2/pv.sc)/st)*st,y1=pv.cy+r.h/2/pv.sc;
+  ctx.lineWidth=1;ctx.strokeStyle=COL.grid;ctx.beginPath();
+  for(k=x0;k<=x1+1e-9;k+=st){x=pv.X(k);ctx.moveTo(x,r.y);ctx.lineTo(x,r.y+r.h);}
+  for(k=y0;k<=y1+1e-9;k+=st){y=pv.Y(k);ctx.moveTo(r.x,y);ctx.lineTo(r.x+r.w,y);}
+  ctx.stroke();
+  ctx.strokeStyle=COL.mut;ctx.globalAlpha=.5;ctx.beginPath();
+  ctx.moveTo(r.x,pv.Y(0));ctx.lineTo(r.x+r.w,pv.Y(0));ctx.moveTo(pv.X(0),r.y);ctx.lineTo(pv.X(0),r.y+r.h);ctx.stroke();
+  ctx.globalAlpha=1;
+  if(lab!==false){
+    for(k=x0;k<=x1+1e-9;k+=st){if(Math.abs(k)<st/2)continue;txt(ctx,(+k.toFixed(6))+'',pv.X(k),pv.Y(0)+12,COL.mut,9.5,'center',FB,'500');}
+    for(k=y0;k<=y1+1e-9;k+=st){if(Math.abs(k)<st/2)continue;txt(ctx,(+k.toFixed(6))+'i',pv.X(0)+4,pv.Y(k)+3,COL.mut,9.5,'left',FB,'500');}
+  }
+  ctx.restore();
+}
+function polyline(ctx,pv,pts,col,lw,alpha){
+  ctx.save();ctx.beginPath();ctx.rect(pv.r.x,pv.r.y,pv.r.w,pv.r.h);ctx.clip();
+  ctx.beginPath();
+  for(var i=0;i<pts.length;i++){var x=pv.X(pts[i][0]),y=pv.Y(pts[i][1]);if(i)ctx.lineTo(x,y);else ctx.moveTo(x,y);}
+  ctx.strokeStyle=col;ctx.lineWidth=lw||2;ctx.globalAlpha=alpha==null?1:alpha;ctx.lineJoin='round';ctx.stroke();ctx.restore();
+}
+function dot(ctx,x,y,rad,col,ring){
+  ctx.beginPath();ctx.arc(x,y,rad,0,TAU);ctx.fillStyle=col;ctx.fill();
+  if(ring){ctx.strokeStyle=COL.fg;ctx.lineWidth=1.2;ctx.stroke();}
+}
+function circ(ctx,pv,cx,cy,rad,col,lw,dash,fill,alpha){
+  ctx.save();ctx.beginPath();ctx.rect(pv.r.x,pv.r.y,pv.r.w,pv.r.h);ctx.clip();
+  ctx.beginPath();ctx.arc(pv.X(cx),pv.Y(cy),rad*pv.sc,0,TAU);
+  if(fill){ctx.globalAlpha=alpha==null?.15:alpha;ctx.fillStyle=fill;ctx.fill();ctx.globalAlpha=1;}
+  if(col){ctx.setLineDash(dash||[]);ctx.strokeStyle=col;ctx.lineWidth=lw||1.6;ctx.stroke();ctx.setLineDash([]);}
+  ctx.restore();
+}
+function originMark(ctx,pv){
+  var x=pv.X(0),y=pv.Y(0);ctx.save();ctx.strokeStyle=COL.fg;ctx.lineWidth=2;ctx.beginPath();
+  ctx.moveTo(x-6,y-6);ctx.lineTo(x+6,y+6);ctx.moveTo(x+6,y-6);ctx.lineTo(x-6,y+6);ctx.stroke();ctx.restore();
+}
+function f2(x){return (Math.abs(x)<0.005?0:x).toFixed(2)}
+function layout2(W,o){
+  o=o||{};var g=10,rects,H;
+  if(W>=640){
+    var s=(W-3*g)/2,ph=Math.min(s,o.ph||400);
+    rects=[{x:g,y:g,w:s,h:ph},{x:2*g+s,y:g,w:s,h:ph}];H=ph+2*g;
+  }else{
+    var w=W-2*g,h=w*0.78;
+    rects=[{x:g,y:g,w:w,h:h},{x:g,y:2*g+h,w:w,h:h}];H=2*h+3*g;
+  }
+  if(o.strip){var sh=W>=640?o.strip:o.strip*1.15;rects.push({x:g,y:H,w:W-2*g,h:sh});H+=sh+g;}
+  return {H:H,rects:rects};
+}
+function layout1(W,ratio,maxH){
+  var h=Math.min(W*ratio,maxH||420);
+  return {H:h+12,rects:[{x:6,y:6,w:W-12,h:h}]};
+}
+
+/* ---------- viz framework ---------- */
+var VIZ=[],SPECS={};
+function selHTML(it){
+  return '<label>'+it.l+'<select data-k="'+it.id+'" aria-label="'+it.l+'">'+it.opts.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>'}).join('')+'</select></label>';
+}
+function ctlHTML(items){
+  return items.map(function(it){
+    if(it.t==='slider')return '<label class="'+(it.grow===false?'':'grow')+'">'+it.l+'<input type="range" min="0" max="1000" value="'+(it.v||0)+'" data-k="'+it.id+'" aria-label="'+it.l+'"><span class="ro" data-o="'+it.id+'"></span></label>';
+    if(it.t==='select')return selHTML(it);
+    if(it.t==='check')return '<label><input type="checkbox" data-k="'+it.id+'">'+it.l+'</label>';
+    if(it.t==='button')return '<button type="button" data-k="'+it.id+'">'+it.l+'</button>';
+    if(it.t==='text')return '<label class="grow">'+it.l+'<input type="text" id="'+it.dom+'" data-k="'+it.id+'" value="'+it.val+'" aria-label="'+it.l+'" style="flex:1"></label>';
+    return '';
+  }).join('');
+}
+function buildViz(fig){
+  var name=fig.getAttribute('data-viz'),spec=SPECS[name];
+  if(!spec){return null}
+  var cv=document.createElement('canvas');
+  cv.setAttribute('role','img');
+  cv.setAttribute('aria-label',(fig.querySelector('figcaption')||{textContent:name}).textContent);
+  fig.insertBefore(cv,fig.firstChild);
+  var v={name:name,fig:fig,cv:cv,ctx:cv.getContext('2d'),spec:spec,W:0,H:0,u:spec.u0||0,phase:'build',holdT:0,vis:false,pause:0,clock:0,s:{},err:false,L:null,dirty:true};
+  var items=spec.ctl||[];
+  if(items.length){
+    var d=document.createElement('div');d.className='ctl';d.innerHTML=ctlHTML(items);
+    var cap=fig.querySelector('figcaption');fig.insertBefore(d,cap);v.ctlEl=d;
+    items.forEach(function(it){
+      if(it.t==='select')v.s[it.id]=it.def||it.opts[0][0];
+      if(it.t==='check')v.s[it.id]=false;
+      if(it.t==='slider'&&it.id!=='u')v.s[it.id]=(it.v||0)/1000;
+    });
+    $$('select[data-k]',d).forEach(function(s){if(v.s[s.getAttribute('data-k')]!=null)s.value=v.s[s.getAttribute('data-k')]});
+    $$('input[type=range][data-k]',d).forEach(function(s){if(s.getAttribute('data-k')!=='u')s.value=v.s[s.getAttribute('data-k')]*1000});
+    var h=function(e){
+      var el=e.target,k=el.getAttribute&&el.getAttribute('data-k');if(!k)return;
+      if(e.type==='click'&&el.tagName!=='BUTTON')return;
+      if(e.type==='input'&&!(el.type==='range'))return;
+      if(e.type==='change'&&el.type==='range')return;
+      v.pause=performance.now()+7000;
+      if(el.type==='range'){
+        if(k==='u'){v.u=el.value/1000;v.phase=v.u>=1?'hold':'build';v.holdT=0;}else v.s[k]=el.value/1000;
+      }else if(el.type==='checkbox')v.s[k]=el.checked;
+      else if(el.tagName==='SELECT')v.s[k]=el.value;
+      if(spec.onctl)spec.onctl(v,k,el);
+      v.dirty=true;
+    };
+    d.addEventListener('input',h);d.addEventListener('change',h);d.addEventListener('click',h);
+    d.addEventListener('pointerdown',function(){v.pause=performance.now()+7000});
+    d.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.type==='text'){var k=e.target.getAttribute('data-k');v.pause=performance.now()+7000;if(spec.onctl)spec.onctl(v,k,e.target);v.dirty=true;}});
+  }
+  if(spec.out){var o=document.createElement('div');o.className='out';fig.insertBefore(o,fig.querySelector('figcaption'));v.outEl=o;}
+  if(spec.text){var tx=document.createElement('div');tx.className='vtxt';fig.insertBefore(tx,fig.querySelector('figcaption'));v.txtEl=tx;}
+  if(spec.click){
+    cv.style.cursor='pointer';
+    cv.addEventListener('click',function(e){var b=cv.getBoundingClientRect();v.pause=performance.now()+7000;spec.click(v,e.clientX-b.left,e.clientY-b.top);v.dirty=true;});
+  }
+  if(spec.init)spec.init(v);
+  fitViz(v);
+  if('ResizeObserver' in window){new ResizeObserver(function(){fitViz(v)}).observe(fig);}
+  else window.addEventListener('resize',function(){fitViz(v)});
+  VIZ.push(v);
+  return v;
+}
+function fitViz(v){
+  var W=Math.floor(v.fig.clientWidth);if(W<50)return;
+  var dpr=Math.min(window.devicePixelRatio||1,2);
+  v.L=v.spec.layout(W);v.W=W;v.H=Math.ceil(v.L.H);
+  v.cv.width=Math.round(W*dpr);v.cv.height=Math.round(v.H*dpr);
+  v.cv.style.height=v.H+'px';
+  v.ctx.setTransform(dpr,0,0,dpr,0,0);
+  v.dirty=true;
+}
+function tickViz(v,dt,now){
+  var sp=v.spec;
+  v.clock+=dt;
+  var auto=!RM&&sp.loop!==false&&now>=v.pause;
+  if(auto){
+    if(v.phase==='build'){v.u+=dt/(sp.dur||9);if(v.u>=1){v.u=1;v.phase='hold';v.holdT=0;}}
+    else{v.holdT+=dt;if(v.holdT>(sp.hold||1.8)){v.u=0;v.phase='build';if(sp.onreset)sp.onreset(v);}}
+  }
+  if(RM&&!v.rmSet){v.u=sp.rm!=null?sp.rm:0.85;v.rmSet=true;v.dirty=true;}
+  if(!v.dirty&&!auto&&!sp.anim)return;
+  if(!v.L)return;
+  var ctx=v.ctx;ctx.clearRect(0,0,v.W,v.H);
+  try{sp.draw(v,v.u,ctx,v.L);}catch(e){if(!v.err){v.err=true;if(window.console)console.error(v.name,e);}}
+  if(v.ctlEl){
+    var s=$('input[data-k="u"]',v.ctlEl);
+    if(s){if(document.activeElement!==s)s.value=Math.round(v.u*1000);
+      var o=$('[data-o="u"]',v.ctlEl);if(o&&sp.fmt){var t=sp.fmt(v);if(o.textContent!==t)o.textContent=t;}}
+  }
+  if(v.outEl&&sp.outFn){var h=sp.outFn(v);if(h!==v.lastOut){v.outEl.innerHTML=h;v.lastOut=h;}}
+  if(v.txtEl&&sp.textFn){var h2=sp.textFn(v);if(h2!==v.lastTxt){v.txtEl.innerHTML=h2;v.lastTxt=h2;}}
+  v.dirty=false;
+}
+function initObservers(){
+  var io='IntersectionObserver' in window?new IntersectionObserver(function(es){
+    es.forEach(function(e){var v=e.target.__v;if(v){v.vis=e.isIntersecting;if(v.vis){v.dirty=true;}}});
+  },{rootMargin:'80px'}):null;
+  VIZ.forEach(function(v){v.fig.__v=v;if(io)io.observe(v.fig);else v.vis=true;});
+}
+window.__FTA={TAU:TAU,$:$,$$:$$,RM:RM,clamp:clamp,COL:function(){return COL},readCols:readCols,FB:FB,FM:FM,
+  cmul:cmul,cdiv:cdiv,csub:csub,cabs:cabs,ev:ev,R2C:R2C,roots:roots,wind:wind,windFn:windFn,POLYS:POLYS,POLYOPTS:POLYOPTS,polyInfo:polyInfo,
+  rr:rr,panelBG:panelBG,pview:pview,txt:txt,axes:axes,polyline:polyline,dot:dot,circ:circ,originMark:originMark,f2:f2,
+  layout2:layout2,layout1:layout1,SPECS:SPECS,VIZ:VIZ,buildViz:buildViz,tickViz:tickViz,initObservers:initObservers,niceStep:niceStep};
+})();
+(function(){
+'use strict';
+var F=window.__FTA,TAU=F.TAU,SP=F.SPECS,POLYS=F.POLYS,POLYOPTS=F.POLYOPTS;
+var ev=F.ev,cabs=F.cabs,cmul=F.cmul,cdiv=F.cdiv,csub=F.csub,wind=F.wind,windFn=F.windFn,roots=F.roots,polyInfo=F.polyInfo;
+var pview=F.pview,panelBG=F.panelBG,axes=F.axes,polyline=F.polyline,dot=F.dot,circ=F.circ,txt=F.txt,originMark=F.originMark,f2=F.f2,rr=F.rr;
+var layout2=F.layout2,layout1=F.layout1,clamp=F.clamp;
+function C(){return F.COL()}
+
+function curve(c,r,N){var a=[];N=N||300;for(var k=0;k<=N;k++){var t=TAU*k/N;a.push(ev(c,[r*Math.cos(t),r*Math.sin(t)]));}return a}
+function wTxt(q){return q.min<0.04?null:Math.round(q.w)}
+
+/* ---------- stair strip ---------- */
+function drawStair(ctx,rc,P,r,mu){
+  var K=C();panelBG(ctx,rc);
+  var l=40,b=24,t=18,rg=14,x0=rc.x+l,pw=rc.w-l-rg,y0=rc.y+t,ph=rc.h-t-b,n=P.n;
+  function xs(v){return x0+v/P.rMax*pw}
+  function ys(w){return y0+ph-w/(n+0.4)*ph}
+  var i,S=P.S;
+  ctx.lineWidth=1;ctx.strokeStyle=K.grid;ctx.beginPath();
+  for(i=0;i<=n;i++){ctx.moveTo(x0,ys(i));ctx.lineTo(x0+pw,ys(i));}
+  ctx.stroke();
+  for(i=0;i<=n;i++)txt(ctx,i+'',x0-8,ys(i)+4,K.c4,11,'right',F.FM,'600');
+  var st=P.rMax>1.6?0.5:0.25;
+  for(var v=0;v<=P.rMax+1e-9;v+=st){txt(ctx,v.toFixed(v%1?2:0),xs(v),rc.y+rc.h-8,K.mut,10,'center',F.FB,'500');ctx.strokeStyle=K.grid;ctx.beginPath();ctx.moveTo(xs(v),y0+ph);ctx.lineTo(xs(v),y0+ph+4);ctx.stroke();}
+  txt(ctx,'W(r)',rc.x+8,rc.y+13,K.c4,11,'left',F.FB,'700');
+  if(mu)txt(ctx,'μ(r)·n',rc.x+52,rc.y+13,K.c3,11,'left',F.FB,'700');
+  txt(ctx,'r',x0+pw,rc.y+rc.h-8,K.mut,10,'right',F.FB,'600');
+  // full faint, then solid up to r
+  function steps(upto,col,lw,al){
+    ctx.beginPath();ctx.moveTo(xs(S[0].r),ys(S[0].w));
+    for(var k=1;k<S.length&&S[k].r<=upto+1e-9;k++){ctx.lineTo(xs(S[k].r),ys(S[k-1].w));ctx.lineTo(xs(S[k].r),ys(S[k].w));}
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.globalAlpha=al;ctx.lineJoin='round';ctx.stroke();ctx.globalAlpha=1;
+  }
+  steps(P.rMax,K.c4,1.6,.22);steps(r,K.c4,2.6,1);
+  if(mu){
+    ctx.beginPath();for(i=0;i<S.length;i++){var X=xs(S[i].r),Y=ys(S[i].mu*n);if(i)ctx.lineTo(X,Y);else ctx.moveTo(X,Y);}
+    ctx.strokeStyle=K.c3;ctx.lineWidth=1.3;ctx.globalAlpha=.3;ctx.stroke();ctx.globalAlpha=1;
+    ctx.beginPath();for(i=0;i<S.length&&S[i].r<=r;i++){var X2=xs(S[i].r),Y2=ys(S[i].mu*n);if(i)ctx.lineTo(X2,Y2);else ctx.moveTo(X2,Y2);}
+    ctx.strokeStyle=K.c3;ctx.lineWidth=2;ctx.stroke();
+  }
+  P.mods.forEach(function(m){ctx.fillStyle=K.c1;ctx.beginPath();ctx.moveTo(xs(m),y0+ph);ctx.lineTo(xs(m)-4,y0+ph+8);ctx.lineTo(xs(m)+4,y0+ph+8);ctx.closePath();ctx.fill();});
+  ctx.setLineDash([4,4]);ctx.strokeStyle=K.fg;ctx.globalAlpha=.5;ctx.beginPath();ctx.moveTo(xs(r),y0);ctx.lineTo(xs(r),y0+ph);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
+  var idx=Math.min(S.length-1,Math.round(r/P.rMax*(S.length-1)));
+  dot(ctx,xs(r),ys(S[idx].w),4.5,K.c4,true);
+}
+
+/* ---------- generic two-plane sweep ---------- */
+function sweepSpec(o){
+  var sp={
+    dur:o.dur||10,hold:1.7,rm:o.rm||.85,anim:true,
+    ctl:[].concat(o.select?[{t:'select',id:'poly',l:'Polynomial',opts:POLYOPTS,def:o.poly||'z4'}]:[],[{t:'slider',id:'u',l:o.slabel||'radius r'}]),
+    layout:function(W){
+      if(o.hero)return layout1(W,0.95,520);
+      if(o.single)return layout1(W,0.7,420);
+      return layout2(W,{strip:o.stair?(o.tall?170:150):0});
+    },
+    init:function(v){F.setSweepPoly(v,o,o.poly||'z4');},
+    onctl:function(v,k,el){if(k==='poly')F.setSweepPoly(v,o,el.value);},
+    fmt:function(v){return F.sweepR(v,o,v.u).toFixed(2)},
+    draw:function(v,u,ctx,L){
+      var K=C(),P=v.P,c=P.c,r=F.sweepR(v,o,u),th=v.clock*1.3;
+      var q=wind(c,r,540);
+      var tgt=Math.max(0.9,q.max*1.2);v.ext=v.ext?v.ext+(tgt-v.ext)*0.25:tgt;
+      var pts=curve(c,r,300);
+      if(o.hero){
+        var rc=L.rects[0];panelBG(ctx,rc);
+        var pv=pview(rc,0,0,Math.max(1.6,v.ext));
+        axes(ctx,pv,false);
+        // trails
+        if(!F.RM)for(var j=1;j<=8;j++){var rj=r*j/9;polyline(ctx,pv,curve(c,rj,200),K.c2,1,.12+.02*j);}
+        polyline(ctx,pv,pts,K.c2,2.8,1);
+        for(var m=0;m<10;m++){var tt=th*(0.6+0.07*m)+m*TAU/10,pz=ev(c,[r*Math.cos(tt),r*Math.sin(tt)]);dot(ctx,pv.X(pz[0]),pv.Y(pz[1]),2.6+(m%3),m%2?K.c3:K.c1);}
+        originMark(ctx,pv);
+        var wt=wTxt(q);
+        txt(ctx,'r = '+r.toFixed(2),rc.x+14,rc.y+24,K.c3,15,'left',F.FM,'600');
+        txt(ctx,'W = '+(wt==null?'—':wt),rc.x+14,rc.y+46,K.c4,15,'left',F.FM,'600');
+        txt(ctx,'p(z) = z⁴ + z + 1',rc.x+rc.w-14,rc.y+24,K.mut,13,'right',F.FM,'400');
+        return;
+      }
+      var rz=L.rects[0],ri=L.rects[1];
+      panelBG(ctx,rz);panelBG(ctx,ri);
+      var ez=Math.max(P.rMax,P.mm)*1.12;
+      if(o.single){ri=null;}
+      var pz=pview(rz,0,0,ez);axes(ctx,pz);
+      circ(ctx,pz,0,0,r,K.c1,2.4);
+      if(o.disc){
+        var r0=F.smallR0(c);circ(ctx,pz,0,0,r0,K.c3,1.6,[5,4]);
+        txt(ctx,'r₀ ≈ '+r0.toFixed(3),rz.x+rz.w-10,rz.y+rz.h-10,K.c3,12,'right',F.FM,'600');
+      }
+      if(!o.noRoots){
+        P.rs.forEach(function(z,i){var hit=Math.abs(r-P.mods[i])<0.03*Math.max(1,P.mods[i]);dot(ctx,pz.X(z[0]),pz.Y(z[1]),hit?7:4.5,hit?K.c3:K.c1,true);});
+      }
+      var mx=r*Math.cos(th),my=r*Math.sin(th);dot(ctx,pz.X(mx),pz.Y(my),4,K.c1,true);
+      txt(ctx,'z-plane',rz.x+10,rz.y+18,K.mut,12,'left',F.FB,'600');
+      txt(ctx,'r = '+r.toFixed(2),rz.x+10,rz.y+36,K.c3,13,'left',F.FM,'600');
+      var pi=pview(ri,0,0,v.ext);axes(ctx,pi);
+      if(o.trail&&!F.RM){for(var j2=1;j2<=10;j2++){var rj2=r*j2/11;polyline(ctx,pi,curve(c,rj2,200),K.c2,1,.18);}}
+      if(o.disc){var a0=c[c.length-1];circ(ctx,pi,a0[0],a0[1],cabs(a0),K.c3,1.8,[5,4],K.c3,.12);dot(ctx,pi.X(a0[0]),pi.Y(a0[1]),4,K.c3,true);txt(ctx,'a₀',pi.X(a0[0])+7,pi.Y(a0[1])-7,K.c3,12,'left',F.FM,'600');}
+      polyline(ctx,pi,pts,K.c2,2.6,1);
+      var pm=ev(c,[mx,my]);dot(ctx,pi.X(pm[0]),pi.Y(pm[1]),4.5,K.c2,true);
+      originMark(ctx,pi);
+      txt(ctx,'p(z)-plane: image of the circle',ri.x+10,ri.y+18,K.mut,12,'left',F.FB,'600');
+      var wt2=wTxt(q);
+      if(o.disc){
+        var Bv=0;for(var k=1;k<c.length;k++)Bv+=cabs(c[k])*Math.pow(r,c.length-1-k+0);
+        // B(r)=sum_{k>=1}|a_k| r^k with a_k coefficient of z^k
+        Bv=0;var n=c.length-1;for(var kk=1;kk<=n;kk++)Bv+=cabs(c[n-kk])*Math.pow(r,kk);
+        txt(ctx,'B(r) = '+Bv.toFixed(3)+'   |a₀| = '+cabs(c[n]).toFixed(3),ri.x+10,ri.y+36,K.c3,13,'left',F.FM,'600');
+        txt(ctx,'W = '+(wt2==null?'—':wt2),ri.x+10,ri.y+54,K.c4,14,'left',F.FM,'600');
+      }else{
+        txt(ctx,wt2==null?'W undefined: the curve touches 0':'W = '+wt2,ri.x+10,ri.y+36,wt2==null?K.c1:K.c4,14,'left',F.FM,'600');
+      }
+      if(o.stair&&L.rects[2])drawStair(ctx,L.rects[2],P,r,o.mu);
+    }
+  };
+  if(o.out){sp.out=true;sp.outFn=o.outFn;}
+  return sp;
+}
+F.setSweepPoly=function(v,o,key){
+  var d=(typeof key==='string')?POLYS[key]:null,c=d?d.c:key;
+  v.pkey=key;v.P=polyInfo(c,o.rMax,!!o.stair);v.ext=0;
+  if(o.rRange)v.P.rMax=Math.max(v.P.rMax,o.rRange[1]);
+};
+F.sweepR=function(v,o,u){return o.rRange?o.rRange[0]+u*(o.rRange[1]-o.rRange[0]):u*v.P.rMax};
+F.smallR0=function(c){
+  var n=c.length-1,a0=cabs(c[n]),lo=0,hi=10;
+  for(var i=0;i<80;i++){var r=(lo+hi)/2,B=0;for(var k=1;k<=n;k++)B+=cabs(c[n-k])*Math.pow(r,k);if(B<a0)lo=r;else hi=r;}
+  return lo;
+};
+
+SP.hero=sweepSpec({hero:true,poly:'z4',rMax:1.6,dur:12});
+SP['sweep-main']=sweepSpec({select:true,stair:true,trail:true,poly:'z4',tall:true,dur:11});
+SP.p1=sweepSpec({poly:'z4',noRoots:true,trail:true,rMax:1.6,dur:9});
+SP.p6=sweepSpec({poly:'z4',disc:true,noRoots:false,rMax:1.2,dur:9});
+SP.p8=sweepSpec({select:true,stair:true,mu:true,poly:'z5',tall:true,dur:12});
+['z3','z4','sq','q2','z5'].forEach(function(k,i){SP['ex'+i]=sweepSpec({poly:k,stair:true,dur:9});});
+SP.pitA=sweepSpec({poly:'q2',rRange:[1.28,1.56],rMax:2,slabel:'radius r',dur:9});
+
+/* ---------- map and recap ---------- */
+var MAPN=[
+  {k:1,x:.07,y:.5,s:'Setup'},{k:2,x:.22,y:.5,s:'Lifting'},{k:3,x:.37,y:.5,s:'Winding no.'},{k:4,x:.53,y:.5,s:'Leash lemma'},
+  {k:5,x:.74,y:.17,s:'Homotopy'},{k:6,x:.74,y:.5,s:'Small circle'},{k:7,x:.74,y:.83,s:'Big circle'},{k:8,x:.93,y:.5,s:'Contradiction'}];
+var MAPE=[[1,2],[2,3],[3,4],[4,5],[4,6],[4,7],[5,8],[6,8],[7,8]];
+function mapPos(v,n){var w=v.W,h=v.H;return {x:18+n.x*(w-36),y:16+n.y*(h-48)}}
+function drawMap(v,u,ctx,sel){
+  var K=C(),i,R=Math.max(11,Math.min(19,v.W/30));
+  MAPE.forEach(function(e){
+    var a=mapPos(v,MAPN[e[0]-1]),b=mapPos(v,MAPN[e[1]-1]);
+    var ang=Math.atan2(b.y-a.y,b.x-a.x),x1=a.x+Math.cos(ang)*R,y1=a.y+Math.sin(ang)*R,x2=b.x-Math.cos(ang)*(R+4),y2=b.y-Math.sin(ang)*(R+4);
+    ctx.strokeStyle=K.mut;ctx.globalAlpha=.65;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    ctx.fillStyle=K.mut;ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-8*Math.cos(ang-.4),y2-8*Math.sin(ang-.4));ctx.lineTo(x2-8*Math.cos(ang+.4),y2-8*Math.sin(ang+.4));ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+  });
+  MAPN.forEach(function(n,idx){
+    var p=mapPos(v,n),on=idx===sel;
+    ctx.beginPath();ctx.arc(p.x,p.y,R+(on?3:0),0,TAU);ctx.fillStyle=on?K.c2:K.card2;ctx.fill();ctx.strokeStyle=on?K.c2:K.c4;ctx.lineWidth=2;ctx.stroke();
+    txt(ctx,String(n.k),p.x,p.y+5,on?K.panel:K.c4,15,'center',F.FM,'700');
+    var lab=v.W<420?'':n.s;
+    if(lab)txt(ctx,lab,p.x,p.y+R+16,on?K.fg:K.mut,v.W<620?10.5:12,'center',F.FB,on?'700':'500');
+  });
+}
+SP.map={dur:12,hold:1,anim:true,
+  layout:function(W){return {H:Math.max(150,Math.min(260,W*0.34)),rects:[]}},
+  draw:function(v,u,ctx){drawMap(v,u,ctx,Math.min(7,Math.floor(u*8)));},
+  click:function(v,x,y){
+    var R=Math.max(11,Math.min(19,v.W/30))+10;
+    MAPN.forEach(function(n){var p=mapPos(v,n);if(Math.hypot(p.x-x,p.y-y)<R){var el=document.getElementById('p'+n.k);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}});
+  }};
+var RECAP=[
+ 'Assume p has no zero. Then every loop γ<sub>r</sub> avoids 0, and a₀ ≠ 0.',
+ 'Along a loop the logarithm can be chosen continuously, and it is unique once its start is fixed.',
+ 'W(γ) = (φ(2π) − φ(0)) / 2πi is an integer, additive under products.',
+ 'If |f − g| &lt; |g| at every point, then W(f) = W(g): the leash lemma.',
+ 'A small change of radius is a leash, so W(γ<sub>r</sub>) does not depend on r.',
+ 'At r = 0 the loop is the single point a₀ ≠ 0, so W = 0.',
+ 'At r = 1 + Σ|a<sub>k</sub>| the leash condition holds against z<sup>n</sup>, so W = n.',
+ '0 = n ≥ 1 is absurd. So p has a zero. ∎'];
+SP.recap={dur:16,hold:1.5,anim:true,text:true,
+  ctl:[{t:'slider',id:'u',l:'step'}],
+  fmt:function(v){return (Math.min(7,Math.floor(v.u*8))+1)+' / 8'},
+  layout:function(W){return {H:Math.max(150,Math.min(240,W*0.3)),rects:[]}},
+  draw:function(v,u,ctx){drawMap(v,u,ctx,Math.min(7,Math.floor(u*8)));},
+  textFn:function(v){var i=Math.min(7,Math.floor(v.u*8));return '<b>Part '+(i+1)+'.</b> '+RECAP[i];}};
+
+/* ---------- history ---------- */
+var HIST=[
+ ['1629','Albert Girard states, in a loose form, that an equation of degree n has n roots. This is commonly credited as an early statement of the idea.'],
+ ['1637','Descartes, in La Géométrie, discusses that an equation can have as many roots as its degree, allowing “imaginary” ones (commonly credited).'],
+ ['1746','d’Alembert publishes an attempted proof built on following the minimum of |p|. It has gaps by modern standards.'],
+ ['1749','Euler attempts a proof for real polynomials by factoring into real linear and quadratic factors. Gaps remain.'],
+ ['1799','Gauss’s doctoral thesis criticises earlier proofs and gives a geometric one, which itself leans on facts about curves not yet proved.'],
+ ['1806','Argand publishes a proof based on d’Alembert’s idea (commonly credited), often regarded as the first essentially complete argument.'],
+ ['1816 / 1849','Gauss publishes further proofs. The 1849 one treats polynomials with complex coefficients (dates as commonly cited).'],
+ ['19th to 20th c.','Cauchy-type and Liouville-type proofs enter complex analysis (credits vary by source). Winding number and fundamental group proofs become standard in the 20th century.']];
+function histX(v,i){return 34+i*(v.W-68)/(HIST.length-1)}
+SP.hist={dur:22,hold:1.5,anim:true,text:true,
+  ctl:[{t:'slider',id:'u',l:'event'}],
+  fmt:function(v){return HIST[Math.min(HIST.length-1,Math.floor(v.u*HIST.length))][0]},
+  layout:function(W){return {H:120,rects:[]}},
+  draw:function(v,u,ctx){
+    var K=C(),sel=Math.min(HIST.length-1,Math.floor(u*HIST.length)),y=56;
+    ctx.strokeStyle=K.mut;ctx.globalAlpha=.5;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(24,y);ctx.lineTo(v.W-24,y);ctx.stroke();ctx.globalAlpha=1;
+    ctx.strokeStyle=K.c2;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(24,y);ctx.lineTo(histX(v,sel),y);ctx.stroke();
+    HIST.forEach(function(h,i){
+      var x=histX(v,i),on=i===sel;dot(ctx,x,y,on?9:6,on?K.c1:K.c3,true);
+      var lab=h[0];if(v.W<600&&lab.length>5)lab=lab.slice(0,4)+(lab.length>4?'…':'');
+      txt(ctx,lab,x,y+(i%2?32:-20),on?K.fg:K.mut,v.W<600?10:12,'center',F.FB,on?'700':'500');
+    });
+  },
+  click:function(v,x){var best=0,bd=1e9;HIST.forEach(function(h,i){var d=Math.abs(histX(v,i)-x);if(d<bd){bd=d;best=i;}});v.u=(best+0.5)/HIST.length;v.phase='build';},
+  textFn:function(v){var i=Math.min(HIST.length-1,Math.floor(v.u*HIST.length));return '<b>'+HIST[i][0]+'.</b> '+HIST[i][1];}};
+
+/* ---------- preliminaries: lift vs principal argument ---------- */
+SP.prelim={dur:9,hold:1.8,anim:true,
+  ctl:[{t:'slider',id:'u',l:'τ'}],fmt:function(v){return (v.u*2).toFixed(2)+'· 2π'},
+  layout:function(W){return layout2(W,{ph:340})},
+  draw:function(v,u,ctx,L){
+    var K=C(),A=L.rects[0],B=L.rects[1];panelBG(ctx,A);panelBG(ctx,B);
+    function th(t){return t+0.6*Math.sin(2*t)}
+    function rho(t){return 1+0.25*Math.cos(t)}
+    var T=u*2*TAU,N=Math.max(2,Math.round(u*400)),pts=[],k;
+    var pv=pview(A,0,0,1.5);axes(ctx,pv);
+    for(k=0;k<=N;k++){var t=T*k/N;pts.push([rho(t)*Math.cos(th(t)),rho(t)*Math.sin(th(t))]);}
+    polyline(ctx,pv,pts,K.c2,2.2);var e=pts[pts.length-1];dot(ctx,pv.X(e[0]),pv.Y(e[1]),5,K.c2,true);originMark(ctx,pv);
+    txt(ctx,'w(τ) = ρ(τ) e^{iθ(τ)}',A.x+10,A.y+18,K.mut,12,'left',F.FM,'600');
+    // plot
+    var l=40,b=26,tp=22,pw=B.w-l-14,ph=B.h-tp-b,x0=B.x+l,y0=B.y+tp,TT=2*TAU,ymin=-Math.PI,ymax=th(TT)+Math.PI;
+    function X(t){return x0+t/TT*pw}function Y(a){return y0+ph-(a-ymin)/(ymax-ymin)*ph}
+    ctx.strokeStyle=K.grid;ctx.lineWidth=1;ctx.beginPath();
+    for(k=0;k*TAU<=ymax;k++){ctx.moveTo(x0,Y(k*TAU));ctx.lineTo(x0+pw,Y(k*TAU));txt(ctx,k?k+'·2π':'0',x0-6,Y(k*TAU)+4,K.mut,10,'right',F.FB,'500');}
+    ctx.stroke();
+    txt(ctx,'Im φ(τ) and principal arg',B.x+10,B.y+16,K.mut,12,'left',F.FB,'600');
+    txt(ctx,'τ',x0+pw,B.y+B.h-8,K.mut,10,'right',F.FB,'600');
+    // shifted lifts
+    ctx.setLineDash([3,4]);ctx.strokeStyle=K.c2;ctx.globalAlpha=.4;ctx.lineWidth=1.3;
+    [-1,1].forEach(function(s){ctx.beginPath();for(var j=0;j<=N;j++){var t2=T*j/N,yy=Y(th(t2)+s*TAU);if(j)ctx.lineTo(X(t2),yy);else ctx.moveTo(X(t2),yy);}ctx.stroke();});
+    ctx.setLineDash([]);ctx.globalAlpha=1;
+    // principal arg with jumps
+    ctx.strokeStyle=K.mut;ctx.lineWidth=1.6;ctx.setLineDash([5,3]);ctx.beginPath();var prev=null;
+    for(k=0;k<=N;k++){var tq=T*k/N,a=th(tq);a=a-TAU*Math.round(a/TAU);var xx=X(tq),yy2=Y(a);if(prev===null||Math.abs(a-prev)>Math.PI)ctx.moveTo(xx,yy2);else ctx.lineTo(xx,yy2);prev=a;}
+    ctx.stroke();ctx.setLineDash([]);
+    ctx.beginPath();for(k=0;k<=N;k++){var tc=T*k/N;if(k)ctx.lineTo(X(tc),Y(th(tc)));else ctx.moveTo(X(tc),Y(th(tc)));}
+    ctx.strokeStyle=K.c4;ctx.lineWidth=2.8;ctx.stroke();
+    dot(ctx,X(T),Y(th(T)),5,K.c4,true);
+    txt(ctx,'continuous lift',x0+8,y0+14,K.c4,11,'left',F.FB,'700');
+    txt(ctx,'principal arg (jumps)',x0+8,y0+28,K.mut,11,'left',F.FB,'700');
+  }};
+
+/* ---------- theorem: roots morph ---------- */
+function expandRoots(rs){var p=[[1,0]];rs.forEach(function(z){var q=[];for(var i=0;i<=p.length;i++)q.push([0,0]);for(var j=0;j<p.length;j++){q[j][0]+=p[j][0];q[j][1]+=p[j][1];var m=cmul(p[j],z);q[j+1][0]-=m[0];q[j+1][1]-=m[1];}p=q;});return p}
+SP.thm={dur:9,hold:1.8,anim:true,
+  ctl:[{t:'select',id:'n',l:'degree n',opts:[[2,'2'],[3,'3'],[4,'4'],[5,'5'],[6,'6']],def:4},{t:'slider',id:'u',l:'morph to (z − 1)ⁿ'}],
+  fmt:function(v){return v.u.toFixed(2)},
+  layout:function(W){return layout1(W,0.62,380)},
+  draw:function(v,u,ctx,L){
+    var K=C(),n=+v.s.n,rc=L.rects[0],rs=[],r0=[],k;
+    panelBG(ctx,rc);var pv=pview(rc,0,0,1.9);axes(ctx,pv);
+    for(k=0;k<n;k++){var ang=TAU*k/n+0.35+0.25*Math.sin(3*k+1),rad=0.7+0.5*(((k*37)%10)/10);r0.push([rad*Math.cos(ang),rad*Math.sin(ang)]);}
+    r0.forEach(function(z){var zz=[(1-u)*z[0]+u,(1-u)*z[1]];rs.push(zz);polyline(ctx,pv,[z,[1,0]],K.c1,1,.25);});
+    var co=expandRoots(rs),A=0;for(k=1;k<co.length;k++)A+=cabs(co[k]);
+    var mm=0;rs.forEach(function(z){mm=Math.max(mm,cabs(z))});
+    circ(ctx,pv,0,0,mm,K.c3,1.6,[5,4]);
+    rs.forEach(function(z,i){dot(ctx,pv.X(z[0]),pv.Y(z[1]),6,K.c1,true);});
+    txt(ctx,n+' roots, counted with multiplicity',rc.x+12,rc.y+22,K.fg,14,'left',F.FM,'600');
+    txt(ctx,'largest |root| = '+mm.toFixed(2),rc.x+12,rc.y+42,K.c3,13,'left',F.FM,'600');
+    txt(ctx,'bound 1 + Σ|aₖ| = '+(1+A).toFixed(2),rc.x+12,rc.y+60,K.c3,13,'left',F.FM,'600');
+    if(u>0.985)txt(ctx,'one root of multiplicity '+n,rc.x+rc.w-12,rc.y+rc.h-14,K.c4,14,'right',F.FM,'700');
+  }};
+
+/* ---------- p2: continuous lift ---------- */
+function mkLoopData(c,r,N){
+  var f=[],a=[],ph=[],prev=0,k,tot=0;
+  for(k=0;k<=N;k++){var t=TAU*k/N,w=ev(c,[r*Math.cos(t),r*Math.sin(t)]);f.push(w);var an=Math.atan2(w[1],w[0]);a.push(an);
+    if(k>0){var d=an-prev;if(d>Math.PI)d-=TAU;else if(d<-Math.PI)d+=TAU;tot+=d;}prev=an;ph.push(tot);}
+  return {f:f,a:a,ph:ph,N:N};
+}
+SP.p2={dur:10,hold:1.8,anim:true,
+  ctl:[{t:'select',id:'r',l:'radius',opts:[['0.5','0.5'],['1','1.0'],['1.5','1.5']],def:'1.5'},{t:'slider',id:'u',l:'t'}],
+  fmt:function(v){return (v.u*2).toFixed(2)+'·π'},
+  layout:function(W){return layout2(W,{ph:360})},
+  draw:function(v,u,ctx,L){
+    var K=C(),c=POLYS.z4.c,r=+v.s.r,N=720;
+    if(!v.D||v.Dr!==r){
+      v.D=mkLoopData(c,r,N);v.Dr=r;var D=v.D,ticks=[0],j0=0,k;
+      while(j0<N){var m=j0+1;for(k=j0+1;k<=N;k++){var q=cdiv(D.f[k],D.f[j0]);if(Math.hypot(q[0]-1,q[1])<0.9)m=k;else break;}if(m===j0)m=j0+1;ticks.push(m);j0=m;}
+      v.ticks=ticks;
+    }
+    var D2=v.D,A=L.rects[0],B=L.rects[1];panelBG(ctx,A);panelBG(ctx,B);
+    var mx=0;D2.f.forEach(function(w){mx=Math.max(mx,cabs(w))});
+    var pv=pview(A,0,0,mx*1.15);axes(ctx,pv);
+    polyline(ctx,pv,D2.f,K.c2,1.3,.25);
+    var idx=Math.max(1,Math.round(u*N));polyline(ctx,pv,D2.f.slice(0,idx+1),K.c2,2.6);
+    var cur=D2.f[idx];dot(ctx,pv.X(cur[0]),pv.Y(cur[1]),5,K.c1,true);originMark(ctx,pv);
+    v.ticks.forEach(function(k2){var p=D2.f[k2];dot(ctx,pv.X(p[0]),pv.Y(p[1]),2.6,K.c3);});
+    txt(ctx,'f(t) = p(re^{it}),  r = '+r,A.x+10,A.y+18,K.mut,12,'left',F.FM,'600');
+    var l=44,b=28,tp=22,pw=B.w-l-14,ph=B.h-tp-b,x0=B.x+l,y0=B.y+tp,top=D2.ph[N]+Math.PI,bot=-Math.PI;
+    function X(t){return x0+t/TAU*pw}function Y(a){return y0+ph-(a-bot)/(top-bot)*ph}
+    ctx.strokeStyle=K.grid;ctx.lineWidth=1;ctx.beginPath();
+    for(var g=0;g*TAU<=top;g++){ctx.moveTo(x0,Y(g*TAU));ctx.lineTo(x0+pw,Y(g*TAU));txt(ctx,g?g+'·2π':'0',x0-6,Y(g*TAU)+4,K.mut,10,'right',F.FB,'500');}
+    ctx.stroke();
+    ctx.strokeStyle=K.mut;ctx.lineWidth=1.5;ctx.setLineDash([5,3]);ctx.beginPath();var pr=null;
+    for(var k3=0;k3<=idx;k3++){var xx=X(TAU*k3/N),yy=Y(D2.a[k3]);if(pr===null||Math.abs(D2.a[k3]-pr)>Math.PI)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);pr=D2.a[k3];}
+    ctx.stroke();ctx.setLineDash([]);
+    ctx.beginPath();for(var k4=0;k4<=idx;k4++){var x4=X(TAU*k4/N),y4=Y(D2.ph[k4]);if(k4)ctx.lineTo(x4,y4);else ctx.moveTo(x4,y4);}
+    ctx.strokeStyle=K.c4;ctx.lineWidth=2.8;ctx.stroke();dot(ctx,X(TAU*idx/N),Y(D2.ph[idx]),5,K.c4,true);
+    v.ticks.forEach(function(k5){var x5=X(TAU*k5/N);ctx.strokeStyle=K.c3;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(x5,y0+ph);ctx.lineTo(x5,y0+ph+7);ctx.stroke();});
+    txt(ctx,'Im φ(t) (blue), principal arg (dashed)',B.x+10,B.y+16,K.mut,12,'left',F.FB,'600');
+    txt(ctx,'t',x0+pw,B.y+B.h-8,K.mut,10,'right',F.FB,'600');
+    txt(ctx,'partition t₀ &lt; t₁ &lt; …'.replace('&lt;','<').replace('&lt;','<'),x0+pw,y0+ph+20,K.c3,10.5,'right',F.FB,'600');
+  }};
+
+/* ---------- p3: winding number ---------- */
+var LOOPS={
+ z4:{n:'p(1.5e^{it}), p = z⁴+z+1',f:function(t){return ev(POLYS.z4.c,[1.5*Math.cos(t),1.5*Math.sin(t)])}},
+ l0:{n:'wobbly circle, one turn',f:function(t){var r=1+.3*Math.cos(3*t);return [r*Math.cos(t),r*Math.sin(t)]}},
+ l1:{n:'three turns',f:function(t){var r=1+.25*Math.cos(2*t);return [r*Math.cos(3*t),r*Math.sin(3*t)]}},
+ l2:{n:'two turns clockwise',f:function(t){var r=1+.3*Math.sin(t);return [r*Math.cos(-2*t),r*Math.sin(-2*t)]}},
+ l3:{n:'circle that misses 0',f:function(t){return [2.2+Math.cos(t),Math.sin(t)]}}
+};
+SP.p3={dur:9,hold:1.8,anim:true,
+  ctl:[{t:'select',id:'loop',l:'Loop',opts:Object.keys(LOOPS).map(function(k){return [k,LOOPS[k].n]}),def:'l1'},{t:'check',id:'mul',l:'multiply by e^{2it}'},{t:'slider',id:'u',l:'t'}],
+  fmt:function(v){return (v.u*2).toFixed(2)+'·π'},
+  layout:function(W){return layout2(W,{ph:340,strip:78})},
+  draw:function(v,u,ctx,L){
+    var K=C(),N=800,key=v.s.loop,mul=!!v.s.mul,sig=key+mul;
+    if(v.sig!==sig){
+      var f=LOOPS[key].f,P=[],cum=[],prev=0,tot=0,k;
+      for(k=0;k<=N;k++){var t=TAU*k/N,p=f(t);if(mul){var e=[Math.cos(2*t),Math.sin(2*t)];p=cmul(p,e);}P.push(p);var a=Math.atan2(p[1],p[0]);if(k>0){var d=a-prev;if(d>Math.PI)d-=TAU;else if(d<-Math.PI)d+=TAU;tot+=d;}prev=a;cum.push(tot/TAU);}
+      v.PP=P;v.cum=cum;v.sig=sig;
+    }
+    var A=L.rects[0],B=L.rects[1],S=L.rects[2];panelBG(ctx,A);panelBG(ctx,B);panelBG(ctx,S);
+    var mx=0;v.PP.forEach(function(p){mx=Math.max(mx,cabs(p))});
+    var pv=pview(A,0,0,mx*1.15);axes(ctx,pv);
+    polyline(ctx,pv,v.PP,K.c2,1.2,.25);var idx=Math.max(1,Math.round(u*N));
+    polyline(ctx,pv,v.PP.slice(0,idx+1),K.c2,2.6);var cp=v.PP[idx];dot(ctx,pv.X(cp[0]),pv.Y(cp[1]),5,K.c1,true);originMark(ctx,pv);
+    txt(ctx,'closed path f',A.x+10,A.y+18,K.mut,12,'left',F.FB,'600');
+    var fin=Math.round(v.cum[N]),lo=Math.min(0,fin)-1,hi=Math.max(1,fin)+1;
+    var l=40,b=26,tp=22,pw=B.w-l-14,ph=B.h-tp-b,x0=B.x+l,y0=B.y+tp;
+    function X(t){return x0+t*pw}function Y(a){return y0+ph-(a-lo)/(hi-lo)*ph}
+    ctx.strokeStyle=K.grid;ctx.lineWidth=1;ctx.beginPath();for(var g=lo;g<=hi;g++){ctx.moveTo(x0,Y(g));ctx.lineTo(x0+pw,Y(g));txt(ctx,g+'',x0-8,Y(g)+4,K.c4,11,'right',F.FM,'600');}ctx.stroke();
+    ctx.beginPath();for(var j=0;j<=idx;j++){var xx=X(j/N),yy=Y(v.cum[j]);if(j)ctx.lineTo(xx,yy);else ctx.moveTo(xx,yy);}
+    ctx.strokeStyle=K.c4;ctx.lineWidth=2.8;ctx.stroke();dot(ctx,X(idx/N),Y(v.cum[idx]),5,K.c4,true);
+    txt(ctx,'turns so far = (φ(t) − φ(0)) / 2π',B.x+10,B.y+16,K.mut,12,'left',F.FB,'600');
+    txt(ctx,'t / 2π',x0+pw,B.y+B.h-8,K.mut,10,'right',F.FB,'600');
+    // number line
+    var nl0=S.x+34,nl1=S.x+S.w-34,mn=-4,mxn=6;function NX(a){return nl0+(a-mn)/(mxn-mn)*(nl1-nl0)}
+    var ny=S.y+S.h*0.5;ctx.strokeStyle=K.mut;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(nl0,ny);ctx.lineTo(nl1,ny);ctx.stroke();
+    for(var q=mn;q<=mxn;q++){ctx.beginPath();ctx.moveTo(NX(q),ny-5);ctx.lineTo(NX(q),ny+5);ctx.stroke();txt(ctx,q+'',NX(q),ny+20,K.mut,11,'center',F.FM,'600');}
+    var cv=clamp(v.cum[idx],mn,mxn);dot(ctx,NX(cv),ny,8,K.c4,true);
+    txt(ctx,idx===N?'W(f) = '+fin:'W(f) = ?',S.x+10,S.y+16,K.c4,13,'left',F.FM,'700');
+  }};
+
+/* ---------- p4: leash ---------- */
+SP.p4={dur:10,hold:1.8,anim:true,
+  ctl:[{t:'select',id:'n',l:'n',opts:[[1,'1'],[2,'2'],[3,'3']],def:2},{t:'select',id:'m',l:'m',opts:[[1,'1'],[2,'2'],[3,'3']],def:3},{t:'slider',id:'u',l:'leash c'}],
+  fmt:function(v){return (v.u*1.6).toFixed(2)},
+  layout:function(W){return layout2(W,{ph:380})},
+  draw:function(v,u,ctx,L){
+    var K=C(),n=+v.s.n,m=+v.s.m,c=u*1.6,th=v.clock*0.8,A=L.rects[0],B=L.rects[1];panelBG(ctx,A);panelBG(ctx,B);
+    function g(t){return [Math.cos(n*t),Math.sin(n*t)]}
+    function fq(t){var h=[1+c*Math.cos(m*t),c*Math.sin(m*t)];return cmul(g(t),h)}
+    var pv=pview(A,0,0,1+c+0.25);axes(ctx,pv);
+    var gp=[],fp=[],k;for(k=0;k<=400;k++){var t=TAU*k/400;gp.push(g(t));fp.push(fq(t));}
+    polyline(ctx,pv,gp,K.c1,2);polyline(ctx,pv,fp,K.c2,2.2);
+    var pg=g(th),pf=fq(th);polyline(ctx,pv,[pg,pf],K.c3,2.4);dot(ctx,pv.X(pg[0]),pv.Y(pg[1]),5.5,K.c1,true);dot(ctx,pv.X(pf[0]),pv.Y(pf[1]),4.5,K.c2,true);originMark(ctx,pv);
+    txt(ctx,'person g (coral), dog f (teal), tree at 0',A.x+10,A.y+18,K.mut,12,'left',F.FB,'600');
+    var Wf=windFn(function(t){return fq(t)},800),near=Math.abs(c-1)<0.04;
+    txt(ctx,'W(g) = '+n,A.x+10,A.y+A.h-28,K.c4,14,'left',F.FM,'700');
+    txt(ctx,near?'W(f): leash touches the tree':'W(f) = '+Math.round(Wf),A.x+10,A.y+A.h-10,near?K.c1:K.c4,14,'left',F.FM,'700');
+    var pb=pview(B,1,0,Math.max(1.6,c+0.4));axes(ctx,pb);
+    circ(ctx,pb,1,0,1,K.c3,1.6,[5,4],K.c3,.12);
+    var hp=[];for(k=0;k<=300;k++){var t2=TAU*k/300;hp.push([1+c*Math.cos(m*t2),c*Math.sin(m*t2)]);}
+    polyline(ctx,pb,hp,K.c2,2.4);var hh=[1+c*Math.cos(m*th),c*Math.sin(m*th)];dot(ctx,pb.X(hh[0]),pb.Y(hh[1]),5,K.c2,true);originMark(ctx,pb);
+    txt(ctx,'ratio h = f/g, circle of radius c = '+c.toFixed(2)+' about 1',B.x+10,B.y+18,K.mut,12,'left',F.FB,'600');
+    txt(ctx,c<1?'c < 1: h avoids 0, W(h) = 0':near?'c is about 1: h reaches 0':'c > 1: h winds '+m+' time'+(m>1?'s':''),B.x+10,B.y+B.h-12,c<1?K.c4:K.c1,13,'left',F.FM,'700');
+  }};
+
+/* ---------- p5: homotopy ---------- */
+SP.p5={dur:10,hold:1.8,anim:true,
+  ctl:[{t:'select',id:'sc',l:'Scenario',opts:[['safe','safe homotopy'],['cross','crosses the origin']],def:'safe'},{t:'slider',id:'u',l:'s'}],
+  fmt:function(v){return v.u.toFixed(2)},
+  layout:function(W){return layout2(W,{ph:380})},
+  draw:function(v,u,ctx,L){
+    var K=C(),sc=v.s.sc,A=L.rects[0],B=L.rects[1],N=360,k;
+    function f0(t){return sc==='safe'?[2*Math.cos(t),2*Math.sin(t)]:[Math.cos(t),Math.sin(t)]}
+    function dd(t){return sc==='safe'?[.9*Math.cos(-2*t)+.4*Math.cos(3*t),.9*Math.sin(-2*t)+.4*Math.sin(3*t)]:[1.5,0]}
+    function H(s,t){var a=f0(t),d=dd(t);return [a[0]+s*d[0],a[1]+s*d[1]]}
+    if(v.scs!==sc){
+      var mg=1e9,Kd=0,mS=[],Ws=[];
+      for(var i=0;i<=100;i++){var s=i/100,mm=1e9;for(k=0;k<360;k++){var t=TAU*k/360,h=H(s,t);mm=Math.min(mm,cabs(h));Kd=Math.max(Kd,cabs(dd(t)));}mS.push(mm);mg=Math.min(mg,mm);Ws.push(mm<0.03?null:Math.round(windFn(function(t){return H(s,t)},400)));}
+      v.mS=mS;v.Ws=Ws;v.mg=mg;v.Kd=Kd;v.scs=sc;
+    }
+    panelBG(ctx,A);panelBG(ctx,B);
+    var pv=pview(A,0,0,sc==='safe'?3.4:2.8);axes(ctx,pv);
+    for(var j=0;j<=10;j++){var sj=j/10;if(sj>u+1e-9)break;var pts=[];for(k=0;k<=N;k++)pts.push(H(sj,TAU*k/N));polyline(ctx,pv,pts,K.c2,1,.15);}
+    var cur=[];for(k=0;k<=N;k++)cur.push(H(u,TAU*k/N));
+    var mcur=v.mS[Math.round(u*100)];
+    circ(ctx,pv,0,0,mcur,K.c3,1.6,[4,4],K.c3,.18);
+    polyline(ctx,pv,cur,K.c2,2.8);originMark(ctx,pv);
+    txt(ctx,'H(s,·) = f₀ + s(f₁ − f₀),  s = '+u.toFixed(2),A.x+10,A.y+18,K.mut,12,'left',F.FM,'600');
+    var wv=v.Ws[Math.round(u*100)];
+    txt(ctx,wv==null?'W undefined: H(s,t) = 0 for some t':'W = '+wv,A.x+10,A.y+A.h-12,wv==null?K.c1:K.c4,14,'left',F.FM,'700');
+    // right plot
+    var l=40,b=28,tp=24,pw=B.w-l-14,ph=B.h-tp-b,x0=B.x+l,y0=B.y+tp,ymax=sc==='safe'?1.6:1.4;
+    function X(s){return x0+s*pw}function Y(y){return y0+ph-y/ymax*ph}
+    ctx.strokeStyle=K.grid;ctx.lineWidth=1;ctx.beginPath();[0,0.5,1].forEach(function(y){ctx.moveTo(x0,Y(y));ctx.lineTo(x0+pw,Y(y));txt(ctx,y+'',x0-6,Y(y)+4,K.mut,10,'right',F.FB,'500');});ctx.stroke();
+    ctx.beginPath();for(var q=0;q<=100;q++){if(q/100>u+1e-9)break;if(q)ctx.lineTo(X(q/100),Y(v.mS[q]));else ctx.moveTo(X(0),Y(v.mS[0]));}ctx.strokeStyle=K.c3;ctx.lineWidth=2.6;ctx.stroke();
+    ctx.beginPath();var st=false;for(var q2=0;q2<=100;q2++){if(q2/100>u+1e-9)break;var w=v.Ws[q2];if(w==null){st=false;continue;}if(st)ctx.lineTo(X(q2/100),Y(w));else{ctx.moveTo(X(q2/100),Y(w));st=true;}}ctx.strokeStyle=K.c4;ctx.lineWidth=2.6;ctx.stroke();
+    txt(ctx,'m(s) = min distance to 0',B.x+10,B.y+16,K.c3,12,'left',F.FB,'700');txt(ctx,'W(s)',B.x+B.w-12,B.y+16,K.c4,12,'right',F.FB,'700');
+    txt(ctx,'s',x0+pw,B.y+B.h-8,K.mut,10,'right',F.FB,'600');
+    if(v.mg>0.05){
+      var Nst=Math.ceil(v.Kd/v.mg);for(var z=0;z<=Nst;z++){ctx.fillStyle=K.fg;ctx.beginPath();ctx.arc(X(z/Nst),Y(0),3.5,0,TAU);ctx.fill();}
+      txt(ctx,'m = '+v.mg.toFixed(2)+', K = '+v.Kd.toFixed(2)+': '+Nst+' leash steps of size '+(1/Nst).toFixed(2)+' < m/K = '+(v.mg/v.Kd).toFixed(2),B.x+10,B.y+B.h-24,K.fg,11,'left',F.FB,'600');
+    }else txt(ctx,'min m = 0: no positive gap, no chain of leashes',B.x+10,B.y+B.h-24,K.c1,11.5,'left',F.FB,'700');
+  }};
+
+/* ---------- p7: ratio to leading term ---------- */
+SP.p7={dur:11,hold:1.8,anim:true,
+  ctl:[{t:'select',id:'poly',l:'Polynomial',opts:POLYOPTS,def:'z4'},{t:'slider',id:'u',l:'radius r'}],
+  fmt:function(v){return F.p7r(v,v.u).toFixed(2)},
+  layout:function(W){return layout2(W,{ph:380})},
+  init:function(v){F.p7set(v,'z4')},
+  onctl:function(v,k,el){if(k==='poly')F.p7set(v,el.value)},
+  draw:function(v,u,ctx,L){
+    var K=C(),c=v.c,n=c.length-1,r=F.p7r(v,u),A=L.rects[0],B=L.rects[1];panelBG(ctx,A);panelBG(ctx,B);
+    function q(rr2,t){var z=[rr2*Math.cos(t),rr2*Math.sin(t)],zn=[1,0];for(var i=0;i<n;i++)zn=cmul(zn,z);return cdiv(ev(c,z),zn)}
+    var pv=pview(A,1,0,2);axes(ctx,pv);circ(ctx,pv,1,0,1,K.c3,1.8,[5,4],K.c3,.12);
+    var pts=[],k,M=0;for(k=0;k<=400;k++){var t=TAU*k/400,w=q(r,t);pts.push(w);M=Math.max(M,Math.hypot(w[0]-1,w[1]));}
+    polyline(ctx,pv,pts,K.c2,2.6);originMark(ctx,pv);dot(ctx,pv.X(1),pv.Y(1),3,K.fg);
+    txt(ctx,'q(t) = p(re^{it}) / (re^{it})^n  and the disc |q − 1| < 1',A.x+10,A.y+18,K.mut,12,'left',F.FM,'600');
+    txt(ctx,'max|q − 1| = '+(M>99?'> 99':M.toFixed(2)),A.x+10,A.y+A.h-30,M<1?K.c4:K.c1,14,'left',F.FM,'700');
+    txt(ctx,M<1?'leash condition holds: W = n = '+n:'q leaves the disc: no conclusion',A.x+10,A.y+A.h-12,M<1?K.c4:K.c1,13,'left',F.FM,'700');
+    var l=40,b=28,tp=24,pw=B.w-l-14,ph=B.h-tp-b,x0=B.x+l,y0=B.y+tp,ymax=2.5;
+    function X(rv){return x0+(rv-v.r0)/(v.r1-v.r0)*pw}function Y(y){return y0+ph-Math.min(y,ymax)/ymax*ph}
+    ctx.strokeStyle=K.grid;ctx.lineWidth=1;ctx.beginPath();[0,1,2].forEach(function(y){ctx.moveTo(x0,Y(y));ctx.lineTo(x0+pw,Y(y));txt(ctx,y+'',x0-6,Y(y)+4,K.mut,10,'right',F.FB,'500');});ctx.stroke();
+    ctx.strokeStyle=K.fg;ctx.globalAlpha=.6;ctx.setLineDash([2,3]);ctx.beginPath();ctx.moveTo(x0,Y(1));ctx.lineTo(x0+pw,Y(1));ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
+    ctx.beginPath();var Ms=v.Ms;for(k=0;k<Ms.length;k++){if(v.r0+(v.r1-v.r0)*k/(Ms.length-1)>r+1e-9)break;if(k)ctx.lineTo(X(v.r0+(v.r1-v.r0)*k/(Ms.length-1)),Y(Ms[k]));else ctx.moveTo(X(v.r0),Y(Ms[0]));}
+    ctx.strokeStyle=K.c2;ctx.lineWidth=2.8;ctx.stroke();
+    ctx.beginPath();var first=true;for(var r2=1;r2<=v.r1+1e-9;r2+=(v.r1-1)/60){var yb=v.A/r2;if(first){ctx.moveTo(X(r2),Y(yb));first=false;}else ctx.lineTo(X(r2),Y(yb));}
+    ctx.strokeStyle=K.c3;ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.stroke();ctx.setLineDash([]);
+    var Rr=1+v.A;ctx.strokeStyle=K.c4;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(X(Rr),y0);ctx.lineTo(X(Rr),y0+ph);ctx.stroke();txt(ctx,'R = 1 + A = '+Rr.toFixed(1),X(Rr)-4,y0+12,K.c4,11,'right',F.FM,'700');
+    dot(ctx,X(r),Y(M),4.5,K.c2,true);
+    txt(ctx,'M(r) = max|q − 1| (teal), bound A/r (dashed)',B.x+10,B.y+16,K.mut,12,'left',F.FB,'600');
+    txt(ctx,'r',x0+pw,B.y+B.h-8,K.mut,10,'right',F.FB,'600');
+  }};
+F.p7set=function(v,key){
+  var c=POLYS[key].c,n=c.length-1,A=0,k;for(k=1;k<c.length;k++)A+=cabs(c[k]);
+  v.c=c;v.A=A;v.r0=0.3;v.r1=1+A+0.6;
+  var Ms=[],N=160;
+  for(var i=0;i<=N;i++){var r=v.r0+(v.r1-v.r0)*i/N,M=0;for(k=0;k<=240;k++){var t=TAU*k/240,z=[r*Math.cos(t),r*Math.sin(t)],zn=[1,0];for(var j=0;j<n;j++)zn=cmul(zn,z);var w=cdiv(ev(c,z),zn);M=Math.max(M,Math.hypot(w[0]-1,w[1]));}Ms.push(M);}
+  v.Ms=Ms;
+};
+F.p7r=function(v,u){return v.r0+u*(v.r1-v.r0)};
+
+/* ---------- roots lab ---------- */
+function parseC(s){
+  s=s.trim().replace(/\s+/g,'');if(!s)return null;
+  if(!/i$/.test(s)){var x=parseFloat(s);return /^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?$/i.test(s)?[x,0]:null;}
+  var body=s.slice(0,-1),idx=-1,k;
+  for(k=body.length-1;k>0;k--){if((body[k]==='+'||body[k]==='-')&&!/e/i.test(body[k-1]||'')){idx=k;break;}}
+  var re=0,im;
+  if(idx>0){re=parseFloat(body.slice(0,idx));var is=body.slice(idx);im=(is==='+'||is==='-')?(is==='-'?-1:1):parseFloat(is);}
+  else{im=(body===''||body==='+')?1:(body==='-'?-1:parseFloat(body));}
+  return (isFinite(re)&&isFinite(im))?[re,im]:null;
+}
+SP.lab=(function(){
+  var o={stair:true,rMax:null,poly:'z4'};
+  var sp=sweepSpec({stair:true,poly:'z4',dur:12});
+  sp.ctl=[{t:'text',id:'coef',dom:'labcoef',l:'Coefficients',val:'1 0 0 1 1'},{t:'button',id:'apply',l:'Apply'},{t:'button',id:'rand',l:'Random'},{t:'slider',id:'u',l:'radius r'}];
+  sp.init=function(v){F.setSweepPoly(v,{stair:true},'z4');v.err2='';};
+  sp.onctl=function(v,k,el){
+    var inp=document.getElementById('labcoef');
+    if(k==='rand'){var n=2+Math.floor(Math.random()*4),a=['1'];for(var i=0;i<n;i++)a.push(String(Math.round(Math.random()*8-4)));inp.value=a.join(' ');k='apply';}
+    if(k==='apply'||k==='coef'){
+      var toks=inp.value.trim().split(/[\s,;]+/).filter(Boolean),cs=toks.map(parseC);
+      if(!toks.length||cs.some(function(x){return x==null})){v.err2='Could not read the coefficients. Use numbers like 3, -2, 1.5, 2i or 3+1i separated by spaces.';return;}
+      if(cs.length<2||cs.length>13){v.err2='Enter between 2 and 13 coefficients (degree 1 to 12).';return;}
+      if(cabs(cs[0])===0){v.err2='The leading coefficient must be nonzero.';return;}
+      v.err2='';F.setSweepPoly(v,{stair:true},cs);
+    }
+  };
+  sp.out=true;
+  sp.outFn=function(v){
+    if(v.err2)return '<span class="err">'+v.err2+'</span>';
+    var P=v.P,r=v.u*P.rMax,q=wind(P.c,r,540),inside=P.mods.filter(function(m){return m<r}).length;
+    var near=P.mods.some(function(m){return Math.abs(m-r)<0.03*Math.max(1,m)});
+    function fz(z){return f2(z[0])+(z[1]<0?' − ':' + ')+f2(Math.abs(z[1]))+'i'}
+    return 'degree <b>'+P.n+'</b>, r = <b>'+r.toFixed(2)+'</b>, roots inside the circle = <b>'+inside+'</b>, W = <b>'+(near||q.min<0.04?'undefined (the circle passes near a root)':Math.round(q.w))+'</b><br><span style="font-size:.82rem;color:var(--mut)">roots: '+P.rs.map(fz).join(' ; ')+'</span>';
+  };
+  return sp;
+})();
+
+/* ---------- exercise: guess the winding number ---------- */
+SP.ex={dur:8,hold:2,anim:true,
+  ctl:[{t:'text',id:'ans',dom:'exans',l:'Your W =',val:''},{t:'button',id:'check',l:'Check'},{t:'button',id:'new',l:'New problem'}],
+  layout:function(W){return layout1(W,0.62,380)},
+  init:function(v){F.newEx(v)},
+  onctl:function(v,k,el){
+    var out=document.getElementById('exout');
+    if(k==='new'){F.newEx(v);document.getElementById('exans').value='';out.innerHTML='A new polynomial and radius. Look at the curve and count its turns around the origin.';return;}
+    if(k==='check'||k==='ans'){
+      var raw=document.getElementById('exans').value.trim(),x=parseInt(raw,10);
+      if(raw===''||isNaN(x)||String(x)!==raw.replace(/^\+/,'')){out.innerHTML='<span class="err">Enter a whole number, for example 2 or -1.</span>';return;}
+      out.innerHTML=(x===v.ans?'<b>Correct.</b> ':'<b class="err">Not yet.</b> ')+'p has '+v.inside+' root'+(v.inside===1?'':'s')+' with |z| &lt; '+v.r.toFixed(2)+', so W = '+v.ans+' by Corollary 8.';
+    }
+  },
+  draw:function(){}};
+SP.ex.draw=function(v,u,ctx,L){
+  var K=C(),rc=L.rects[0];panelBG(ctx,rc);
+  var pts=curve(v.c,v.r,400),mx=0;pts.forEach(function(p){mx=Math.max(mx,cabs(p))});
+  var pv=pview(rc,0,0,Math.max(1,mx*1.15));axes(ctx,pv);
+  var N=Math.max(2,Math.round(u*400));
+  polyline(ctx,pv,pts,K.c2,1.2,.25);polyline(ctx,pv,pts.slice(0,N+1),K.c2,2.8);
+  var e=pts[N];dot(ctx,pv.X(e[0]),pv.Y(e[1]),5,K.c1,true);originMark(ctx,pv);
+  txt(ctx,'p(z) = '+v.name,rc.x+12,rc.y+22,K.fg,15,'left',F.FM,'600');
+  txt(ctx,'curve of p(re^{it}) with r = '+v.r.toFixed(2),rc.x+12,rc.y+42,K.c3,13,'left',F.FM,'600');
+};
+F.newEx=function(v){
+  for(var tries=0;tries<200;tries++){
+    var n=2+Math.floor(Math.random()*4),a=[1],i;
+    for(i=0;i<n;i++)a.push(Math.round(Math.random()*6-3));
+    if(a[n]===0)a[n]=1;
+    var c=F.R2C(a),rs=roots(c),mods=rs.map(cabs),r=Math.round((0.3+Math.random()*1.9)*20)/20;
+    if(mods.some(function(m){return Math.abs(m-r)<0.12}))continue;
+    var q=wind(c,r,1200),w=Math.round(q.w);if(Math.abs(q.w-w)>0.05)continue;
+    var name='';for(i=0;i<=n;i++){var co=a[i],p=n-i;if(co===0)continue;var s=Math.abs(co)===1&&p>0?'':String(Math.abs(co));var term=s+(p>0?'z'+(p>1?sup(p):''):'');name+=(name?(co<0?' − ':' + '):(co<0?'−':''))+term;}
+    v.c=c;v.r=r;v.ans=w;v.inside=mods.filter(function(m){return m<r}).length;v.name=name;v.u=0;v.phase='build';v.dirty=true;return;
+  }
+  v.c=F.R2C([1,0,1]);v.r=0.5;v.ans=0;v.inside=0;v.name='z² + 1';
+};
+function sup(p){var m={2:'²',3:'³',4:'⁴',5:'⁵'};return m[p]||('^'+p)}
+
+/* ---------- pitfalls ---------- */
+SP.pitB={dur:9,hold:1.8,anim:true,
+  ctl:[{t:'slider',id:'u',l:'wobble w'}],fmt:function(v){return (v.u*0.9).toFixed(2)},
+  layout:function(W){return layout1(W,0.58,360)},
+  draw:function(v,u,ctx,L){
+    var K=C(),w=u*0.9,rc=L.rects[0];panelBG(ctx,rc);
+    function f(t){return [-2.2+Math.cos(t),Math.sin(t)+w*Math.sin(7*t)]}
+    var pv=pview(rc,-1.2,0,2.7);axes(ctx,pv);
+    ctx.save();ctx.strokeStyle=K.c3;ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(rc.x,pv.Y(0));ctx.lineTo(pv.X(0),pv.Y(0));ctx.stroke();ctx.restore();
+    var pts=[],k,N=1200,up=0,dn=0;
+    for(k=0;k<=N;k++)pts.push(f(TAU*k/N));
+    polyline(ctx,pv,pts,K.c2,2.4);
+    for(k=1;k<=N;k++){var a=pts[k-1],b=pts[k];if(a[1]<0&&b[1]>=0&&a[0]<0){up++;var xx=a[0]+(b[0]-a[0])*(-a[1])/(b[1]-a[1]);dot(ctx,pv.X(xx),pv.Y(0),4.5,K.c1,true);}
+      if(a[1]>=0&&b[1]<0&&a[0]<0){dn++;var x2=a[0]+(b[0]-a[0])*(-a[1])/(b[1]-a[1]);dot(ctx,pv.X(x2),pv.Y(0),4.5,K.c4,true);}}
+    originMark(ctx,pv);
+    txt(ctx,'f(t) = −2.2 + cos t + i( sin t + w sin 7t )',rc.x+12,rc.y+22,K.mut,13,'left',F.FM,'600');
+    txt(ctx,'unsigned crossings of the negative axis: '+(up+dn),rc.x+12,rc.y+rc.h-48,K.c1,14,'left',F.FM,'700');
+    txt(ctx,'upward '+up+' (coral), downward '+dn+' (blue), signed total '+(up-dn),rc.x+12,rc.y+rc.h-28,K.fg,13,'left',F.FM,'600');
+    txt(ctx,'W = '+Math.round(windFn(f,1600)),rc.x+12,rc.y+rc.h-10,K.c4,14,'left',F.FM,'700');
+  }};
+SP.pitC={dur:9,hold:1.8,anim:true,
+  ctl:[{t:'slider',id:'u',l:'b in x² + b'}],fmt:function(v){return (v.u*2-1).toFixed(2)},
+  layout:function(W){return layout1(W,0.5,300)},
+  draw:function(v,u,ctx,L){
+    var K=C(),b=u*2-1,rc=L.rects[0];panelBG(ctx,rc);
+    var pv=pview(rc,0,0,1.5);axes(ctx,pv);
+    var tr1=[],tr2=[],k;for(k=0;k<=200;k++){var bb=-1+2*k/200;if(bb<=b){var s=Math.sqrt(Math.abs(bb));if(bb<=0){tr1.push([s,0]);tr2.push([-s,0]);}else{tr1.push([0,s]);tr2.push([0,-s]);}}}
+    polyline(ctx,pv,tr1,K.c1,1.5,.5);polyline(ctx,pv,tr2,K.c1,1.5,.5);
+    var s2=Math.sqrt(Math.abs(b)),z1=b<=0?[s2,0]:[0,s2],z2=b<=0?[-s2,0]:[0,-s2];
+    dot(ctx,pv.X(z1[0]),pv.Y(z1[1]),7,K.c1,true);dot(ctx,pv.X(z2[0]),pv.Y(z2[1]),7,K.c1,true);
+    txt(ctx,'roots of x² + b, b = '+b.toFixed(2),rc.x+12,rc.y+22,K.fg,14,'left',F.FM,'600');
+    txt(ctx,Math.abs(b)<0.02?'double root at 0':(b<0?'two real roots':'a conjugate pair, none real'),rc.x+12,rc.y+42,K.c3,13,'left',F.FM,'600');
+    txt(ctx,'always 2 roots with multiplicity',rc.x+rc.w-12,rc.y+rc.h-12,K.c4,13,'right',F.FM,'700');
+  }};
+
+/* ---------- domain colouring ---------- */
+function hsl2rgb(h,s,l){h=((h%360)+360)%360;var c=(1-Math.abs(2*l-1))*s,x=c*(1-Math.abs((h/60)%2-1)),m=l-c/2,r,g,b;
+  if(h<60){r=c;g=x;b=0}else if(h<120){r=x;g=c;b=0}else if(h<180){r=0;g=c;b=x}else if(h<240){r=0;g=x;b=c}else if(h<300){r=x;g=0;b=c}else{r=c;g=0;b=x}
+  return [Math.round((r+m)*255),Math.round((g+m)*255),Math.round((b+m)*255)];}
+SP.dom={dur:12,hold:1.8,anim:true,
+  ctl:[{t:'select',id:'poly',l:'Polynomial',opts:POLYOPTS,def:'z5'},{t:'slider',id:'u',l:'radius r'}],
+  fmt:function(v){return (v.u*v.P.rMax).toFixed(2)},
+  layout:function(W){return layout2(W,{ph:380})},
+  init:function(v){F.domSet(v,'z5')},
+  onctl:function(v,k,el){if(k==='poly')F.domSet(v,el.value)},
+  draw:function(v,u,ctx,L){
+    var K=C(),A=L.rects[0],B=L.rects[1],P=v.P,r=u*P.rMax,th=v.clock*1.2;panelBG(ctx,A);panelBG(ctx,B);
+    var side=Math.min(A.w,A.h),ax=A.x+(A.w-side)/2,ay=A.y+(A.h-side)/2;
+    ctx.save();rr(ctx,ax,ay,side,side,10);ctx.clip();ctx.imageSmoothingEnabled=true;ctx.drawImage(v.off,ax,ay,side,side);ctx.restore();
+    var pv=pview({x:ax,y:ay,w:side,h:side},0,0,v.ext);
+    ctx.beginPath();ctx.arc(pv.X(0),pv.Y(0),r*pv.sc,0,TAU);ctx.strokeStyle='#000';ctx.lineWidth=5;ctx.stroke();ctx.strokeStyle='#fff';ctx.lineWidth=2.6;ctx.stroke();
+    P.rs.forEach(function(z){dot(ctx,pv.X(z[0]),pv.Y(z[1]),4,'#000',false);dot(ctx,pv.X(z[0]),pv.Y(z[1]),2.2,'#fff',false);});
+    dot(ctx,pv.X(r*Math.cos(th)),pv.Y(r*Math.sin(th)),5,'#fff',true);
+    // strip
+    var l=14,sx=B.x+l,sw=B.w-2*l,sy=B.y+B.h*0.34,sh=Math.min(70,B.h*0.2),k,N=360;
+    for(k=0;k<N;k++){var t=TAU*(k+.5)/N,w=ev(P.c,[r*Math.cos(t),r*Math.sin(t)]),rgb=hsl2rgb(Math.atan2(w[1],w[0])*180/Math.PI,0.85,0.55);ctx.fillStyle='rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';ctx.fillRect(sx+k*sw/N,sy,sw/N+1,sh);}
+    var tm=((th%TAU)+TAU)%TAU;ctx.strokeStyle=K.fg;ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(sx+tm/TAU*sw,sy-6);ctx.lineTo(sx+tm/TAU*sw,sy+sh+6);ctx.stroke();
+    txt(ctx,'colour of p(z) along the circle, t from 0 to 2π',B.x+10,B.y+20,K.mut,12,'left',F.FB,'600');
+    var q=wind(P.c,r,540),inside=P.mods.filter(function(m){return m<r}).length,near=q.min<0.04;
+    txt(ctx,near?'the circle passes through a root':'colour cycles W = '+Math.round(q.w),B.x+10,sy+sh+36,near?K.c1:K.c4,16,'left',F.FM,'700');
+    txt(ctx,'roots inside the circle: '+inside,B.x+10,sy+sh+60,K.fg,14,'left',F.FM,'600');
+    txt(ctx,'r = '+r.toFixed(2),B.x+10,sy+sh+84,K.c3,14,'left',F.FM,'600');
+  }};
+F.domSet=function(v,key){
+  v.P=polyInfo(POLYS[key].c,null,false);v.ext=Math.max(1.8,v.P.mm*1.2);
+  var D=150,off=document.createElement('canvas');off.width=D;off.height=D;var ox=off.getContext('2d'),id=ox.createImageData(D,D),c=v.P.c;
+  for(var j=0;j<D;j++)for(var i=0;i<D;i++){
+    var z=[(i+.5)/D*2*v.ext-v.ext,v.ext-(j+.5)/D*2*v.ext],w=ev(c,z),m=cabs(w),h=Math.atan2(w[1],w[0])*180/Math.PI;
+    var fr=Math.log(m+1e-9)/Math.LN2;fr=fr-Math.floor(fr);
+    var rgb=hsl2rgb(h,0.85,0.42+0.22*fr),o=(j*D+i)*4;id.data[o]=rgb[0];id.data[o+1]=rgb[1];id.data[o+2]=rgb[2];id.data[o+3]=255;
+  }
+  ox.putImageData(id,0,0);v.off=off;
+};
+})();
+(function(){
+'use strict';
+var F=window.__FTA,$=F.$,$$=F.$$,RM=F.RM,TAU=F.TAU;
+
+/* ---------- build the diagrams ---------- */
+$$('figure[data-viz]').forEach(function(fig){try{F.buildViz(fig)}catch(e){if(window.console)console.error(fig.getAttribute('data-viz'),e)}});
+F.initObservers();
+
+/* ---------- theme ---------- */
+var root=document.documentElement,tbtn=$('#theme');
+function effDark(){var t=root.getAttribute('data-theme');if(t)return t==='dark';return !!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)}
+function syncTheme(){tbtn.textContent=effDark()?'☾':'☀';F.VIZ.forEach(function(v){v.dirty=true});}
+tbtn.addEventListener('click',function(){root.setAttribute('data-theme',effDark()?'light':'dark');setTimeout(function(){F.readCols();syncTheme();},30);});
+if(window.matchMedia){var mq=matchMedia('(prefers-color-scheme: dark)');var cb=function(){setTimeout(function(){F.readCols();syncTheme();},30)};if(mq.addEventListener)mq.addEventListener('change',cb);else if(mq.addListener)mq.addListener(cb);}
+syncTheme();
+
+/* ---------- navigation ---------- */
+var secs=$$('section[data-nav]'),links=$('#links'),pills=$('#pills'),nav=$('#nav');
+secs.forEach(function(s){var a=document.createElement('a');a.href='#'+s.id;a.textContent=s.getAttribute('data-title');a.setAttribute('data-for',s.id);links.appendChild(a);});
+var parts=$$('[data-pill]');
+parts.forEach(function(p){var a=document.createElement('a');a.href='#'+p.id;a.textContent=p.getAttribute('data-pill')+'. '+p.getAttribute('data-short');a.setAttribute('data-for',p.id);pills.appendChild(a);});
+var prog=$('#prog'),proofSec=$('#proof');
+function navH(){return nav.offsetHeight+8}
+function onScroll(){
+  var y=window.scrollY,dh=document.documentElement.scrollHeight-window.innerHeight;
+  prog.style.width=(dh>0?Math.min(100,y/dh*100):0)+'%';
+  var line=navH()+60,cur=null;
+  secs.forEach(function(s){if(s.getBoundingClientRect().top<=line)cur=s.id;});
+  $$('a',links).forEach(function(a){var on=a.getAttribute('data-for')===cur;a.classList.toggle('on',on);if(on&&!a.__s){a.__s=1;}else if(!on)a.__s=0;});
+  var act=$('a.on',links);if(act&&act.__sc!==act.getAttribute('data-for')){act.__sc=act.getAttribute('data-for');var L=links,l=act.offsetLeft-L.clientWidth/2+act.offsetWidth/2;if(L.scrollTo)L.scrollTo({left:l,behavior:RM?'auto':'smooth'});}
+  var pr=proofSec.getBoundingClientRect(),inProof=pr.top<line+40&&pr.bottom>line+40;
+  nav.classList.toggle('showp',inProof);
+  var pc=null;parts.forEach(function(p){if(p.getBoundingClientRect().top<=line+20)pc=p.id;});
+  $$('a',pills).forEach(function(a){a.classList.toggle('on',inProof&&a.getAttribute('data-for')===pc)});
+}
+window.addEventListener('scroll',onScroll,{passive:true});window.addEventListener('resize',onScroll);
+function jump(e){var a=e.target.closest('a[href^="#"]');if(!a)return;var t=document.getElementById(a.getAttribute('href').slice(1));if(!t)return;e.preventDefault();var top=t.getBoundingClientRect().top+window.scrollY-navH()-(t.matches('section')?0:12);window.scrollTo({top:top,behavior:RM?'auto':'smooth'});}
+links.addEventListener('click',jump);pills.addEventListener('click',jump);
+document.addEventListener('click',function(e){var a=e.target.closest('a.chip,#begin');if(a)jump(e);});
+$('.brand').addEventListener('click',function(e){e.preventDefault();window.scrollTo({top:0,behavior:RM?'auto':'smooth'});});
+
+/* ---------- pop-out ---------- */
+(function(){
+  var els=$$('.pop');
+  if(RM||!('IntersectionObserver' in window)){return;}
+  var vh=window.innerHeight,bat=0,pending=[];
+  var io=new IntersectionObserver(function(es){
+    var k=0;es.forEach(function(e){if(e.isIntersecting){var el=e.target;el.style.setProperty('--d',(k*0.08)+'s');k++;el.classList.add('in');io.unobserve(el);}});
+  },{threshold:0.06,rootMargin:'0px 0px -4% 0px'});
+  els.forEach(function(el,i){
+    var r=el.getBoundingClientRect();
+    el.classList.add('pre');
+    if(r.top<vh){setTimeout(function(){el.style.setProperty('--d',(Math.min(i,6)*0.1)+'s');el.classList.add('in');},30);}
+    else io.observe(el);
+  });
+})();
+
+/* ---------- main loop ---------- */
+var last=performance.now();
+function frame(now){
+  var dt=Math.min(0.05,(now-last)/1000);last=now;
+  bgTick(dt);
+  for(var i=0;i<F.VIZ.length;i++){var v=F.VIZ[i];if(v.vis)F.tickViz(v,dt,now);}
+  requestAnimationFrame(frame);
+}
+
+/* ---------- background symbols ---------- */
+var bg=$('#bgc'),bx=bg.getContext('2d'),BI=[],bw=0,bh=0;
+var SYMS=['∮','∂','∇','π','Σ','z','ℂ','i','∞','θ','W','p(z)','eⁱᶿ','√','∑','φ','n','0'];
+function bgResize(){
+  var dpr=Math.min(window.devicePixelRatio||1,2);bw=window.innerWidth;bh=window.innerHeight;
+  bg.width=bw*dpr;bg.height=bh*dpr;bx.setTransform(dpr,0,0,dpr,0,0);
+  if(!BI.length){
+    var cnt=bw<700?22:38,rnd=function(a,b){return a+Math.random()*(b-a)};
+    for(var i=0;i<cnt;i++){
+      var k=i%6;BI.push({x:rnd(0,bw),y:rnd(0,bh),vx:rnd(-6,6),vy:rnd(-9,-2),rot:rnd(0,TAU),vr:rnd(-.1,.1),s:rnd(22,64),t:k<3?'sym':['circle','tri','wave','arrow','spiral'][(k+i)%5],g:SYMS[i%SYMS.length]});
+    }
+  }
+  bgDraw();
+}
+function bgDraw(){
+  var K=F.COL();bx.clearRect(0,0,bw,bh);bx.fillStyle=K.sym;bx.strokeStyle=K.sym;bx.lineWidth=1.6;
+  BI.forEach(function(b){
+    bx.save();bx.translate(b.x,b.y);bx.rotate(b.rot);var s=b.s;
+    if(b.t==='sym'){bx.font='italic '+s+"px 'STIX Two Text','Times New Roman',serif";bx.textAlign='center';bx.textBaseline='middle';bx.fillText(b.g,0,0);}
+    else if(b.t==='circle'){bx.beginPath();bx.arc(0,0,s*.6,0,TAU);bx.stroke();bx.beginPath();bx.arc(0,0,s*.3,0,TAU);bx.stroke();}
+    else if(b.t==='tri'){bx.beginPath();bx.moveTo(0,-s*.6);bx.lineTo(s*.55,s*.4);bx.lineTo(-s*.55,s*.4);bx.closePath();bx.stroke();}
+    else if(b.t==='wave'){bx.beginPath();for(var x=-s;x<=s;x+=3){var y=Math.sin(x/s*TAU)*s*.25;if(x===-s)bx.moveTo(x,y);else bx.lineTo(x,y);}bx.stroke();}
+    else if(b.t==='arrow'){bx.beginPath();bx.moveTo(-s*.7,0);bx.lineTo(s*.7,0);bx.lineTo(s*.45,-s*.18);bx.moveTo(s*.7,0);bx.lineTo(s*.45,s*.18);bx.stroke();}
+    else{bx.beginPath();for(var a=0;a<TAU*2.5;a+=.15){var rr=a*s*.07,xx=rr*Math.cos(a),yy=rr*Math.sin(a);if(a===0)bx.moveTo(xx,yy);else bx.lineTo(xx,yy);}bx.stroke();}
+    bx.restore();
+  });
+}
+var bacc=0;
+function bgTick(dt){
+  if(RM)return;bacc+=dt;if(bacc<1/30)return;var d=bacc;bacc=0;
+  BI.forEach(function(b){b.x+=b.vx*d;b.y+=b.vy*d;b.rot+=b.vr*d;if(b.y<-80){b.y=bh+80;b.x=Math.random()*bw;}if(b.x<-80)b.x=bw+80;if(b.x>bw+80)b.x=-80;});
+  bgDraw();
+}
+window.addEventListener('resize',bgResize);bgResize();
+
+/* ---------- floating controls and auto-scroll ---------- */
+var play=$('#fplay'),speed=$('#fspeed'),top=$('#ftop'),heroAuto=$('#heroauto');
+var auto=false,spd=1,SPD=[1,2,4],si=0,pos=0,lastT=0;
+function setAuto(on){
+  auto=on;play.textContent=on?'❚❚':'▶';play.classList.toggle('act',on);
+  if(on){pos=window.scrollY;lastT=performance.now();requestAnimationFrame(autoStep);}
+}
+function autoStep(now){
+  if(!auto)return;
+  var dt=Math.min(0.06,(now-lastT)/1000);lastT=now;
+  if(Math.abs(window.scrollY-pos)>4)pos=window.scrollY;
+  pos+=55*spd*dt;
+  var max=document.documentElement.scrollHeight-window.innerHeight;
+  if(pos>=max){window.scrollTo({top:max,behavior:'instant'});setAuto(false);return;}
+  window.scrollTo({top:pos,behavior:'instant'});
+  requestAnimationFrame(autoStep);
+}
+play.addEventListener('click',function(){setAuto(!auto)});
+heroAuto.addEventListener('click',function(){setAuto(true)});
+speed.addEventListener('click',function(){si=(si+1)%3;spd=SPD[si];speed.textContent=spd+'×';});
+top.addEventListener('click',function(){setAuto(false);window.scrollTo({top:0,behavior:RM?'auto':'smooth'});});
+['wheel','touchstart','keydown'].forEach(function(ev){window.addEventListener(ev,function(e){if(auto){if(e.type==='keydown'&&['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' '].indexOf(e.key)<0)return;setAuto(false);}},{passive:true});});
+window.addEventListener('pointerdown',function(e){if(auto&&!e.target.closest('.fabs')&&!e.target.closest('#heroauto'))setAuto(false);},{passive:true});
+
+requestAnimationFrame(function(t){last=t;onScroll();requestAnimationFrame(frame);});
+})();
+</script>
+
+</body></html>
